@@ -1,0 +1,52 @@
+#BGImage{
+    background-image: url(https://imgs.search.brave.com/bSdeEagRInw79Uir7hTIhiNRlJ58GAd__FRuaGGj7Mc/rs:fit:1200:1200:1/g:ce/aHR0cHM6Ly93d3cu/d2FsbHBhcGVydGlw/LmNvbS93bWltZ3Mv/MC0yNDYyX3N0YXJz/LWJhY2tncm91bmQu/anBn);
+    background-repeat: no-repeat;
+    background-size: cover;
+    padding: 0;
+    margin: 0;
+    padding-top: 10%;
+
+    position: relative;
+    min-height: 100vh;
+}
+#TextDiv{
+    max-width: 90%;
+    margin-left: 10%;
+    padding-top: 1%;
+    margin-right: 0;
+    padding-right: 0;
+    background-color: white;
+    position: relative;
+    min-height: 100vh;
+}
+.carousel{
+    max-width: 400px;
+}
+.carousel-item .card{
+    max-width: 400px;
+}
+.carousel-item .card .card-body{
+    height: 300px;
+}
+.carousel-item img{
+    max-width: 400px;
+    max-height: 400px;
+}
+.carousel-control-next{
+    height: 200px;
+}
+.carousel-control-prev{
+    height: 200px;
+}
+footer {
+    width: 100%;
+    height: 100px;
+}
+.navigationbar{
+    position: fixed;
+    top: 0;
+    min-width: 100%;
+    margin: 0;
+    padding: 0;
+    z-index: 1;
+}
