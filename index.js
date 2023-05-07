@@ -3,6 +3,7 @@ const app = express();
 const ejs = require('ejs');
 const expressLayouts = require('express-ejs-layouts');
 
+app.engine('ejs', require('express-ejs-extend')); // add this line
 app.engine('ejs', ejs.renderFile);
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views');
