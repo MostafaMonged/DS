@@ -1,0 +1,121 @@
+/* Body styles */
+body {
+  font-family: "Open Sans", sans-serif;
+  background-color: #1a1a1a;
+  color: #fff;
+  overflow-x: hidden;
+}
+
+/* Hero banner styles */
+.hero-banner {
+  background-color: #333;
+  padding: 100px 0;
+}
+
+.hero-banner h1 {
+  font-size: 48px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.hero-banner p {
+  font-size: 24px;
+  margin-bottom: 40px;
+}
+
+.hero-banner a {
+  font-size: 18px;
+  font-weight: 700;
+  padding: 15px 30px;
+  border-radius: 30px;
+  background-color: #ff5722;
+  color: #fff;
+  text-decoration: none;
+}
+
+.hero-banner a:hover {
+  background-color: #f44336;
+}
+
+/* Featured products styles */
+.featured-products {
+  background-color: #1a1a1a;
+  padding: 100px 0;
+}
+
+.featured-products h2 {
+  font-size: 36px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 50px;
+  color: #fff;
+}
+
+.featured-products .card {
+  background-color: #333;
+  color: #fff;
+  margin-bottom: 30px;
+}
+
+.featured-products .card-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.featured-products .card-text {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.featured-products .btn-primary {
+  font-size: 18px;
+  font-weight: 700;
+  padding: 10px 20px;
+  border-radius: 30px;
+  background-color: #ff5722;
+  border: none;
+}
+
+.featured-products .btn-primary:hover {
+  background-color: #f44336;
+}
+
+/* Product categories styles */
+.product-categories {
+  background-color: #333;
+  padding: 100px 0;
+}
+
+.product-categories h2 {
+  font-size: 36px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 50px;
+  color: #fff;
+}
+
+.product-categories .card {
+  background-color: #1a1a1a;
+  color: #fff;
+  margin-bottom: 30px;
+}
+
+.product-categories .card-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.product-categories .btn-primary {
+  font-size: 18px;
+  font-weight: 700;
+  padding: 10px 20px;
+  border-radius: 30px;
+  background-color: #ff5722;
+  border: none;
+}
+
+.product-categories .btn-primary:hover {
+  background-color: #f44336;
+}
