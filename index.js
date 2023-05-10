@@ -9,13 +9,22 @@ app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views');
 app.use(express.static(__dirname + '/public'));
 app.get('/', (req, res) => {
-    res.render('layout', { pageTitle: 'Home' });
+    res.render('home', { pageTitle: 'Home' });
 });
 app.get('/signup', (req, res) => {
     res.render('signup', { pageTitle: 'SignUp' });
 });
 app.get('/login', (req, res) => {
     res.render('login', { pageTitle: 'Login' });
+});
+app.get('/shop', (req, res) => {
+    res.render('shop', { pageTitle: 'Shop' });
+});
+app.get('/cart', (req, res) => {
+    res.render('cart', { pageTitle: 'Cart' });
+});
+app.get('/checkout', (req, res) => {
+    res.render('checkout', { pageTitle: 'Checkout' });
 });
 
 app.listen(3000, () => {

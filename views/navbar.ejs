@@ -1,31 +1,43 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-        <a href="#" class="navbar-brand">Brand</a>
-        <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
-            <div class="navbar-nav">
-                <a href="#" class="nav-item nav-link active">Home</a>
-                <a href="#" class="nav-item nav-link">Profile</a>
-                <div class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Messages</a>
-                    <div class="dropdown-menu">
-                        <a href="#" class="dropdown-item">Inbox</a>
-                        <a href="#" class="dropdown-item">Sent</a>
-                        <a href="#" class="dropdown-item">Drafts</a>
-                    </div>
-                </div>
-            </div>
-            <form class="d-flex">
-                <div class="input-group">                    
-                    <input type="text" class="form-control" placeholder="Search">
-                    <button type="button" class="btn btn-secondary"><i class="bi-search"></i></button>
-                </div>
-            </form>
-            <div class="navbar-nav">
-                <a href="#" class="nav-item nav-link">Login</a>
-            </div>
-        </div>
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">Brand</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="/">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/shop">Shop</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/cart">Cart</a>
+        </li>
+      </ul>
+      <form class="d-flex">
+        <input
+          class="form-control me-2"
+          type="search"
+          placeholder="Search"
+          aria-label="Search"
+        />
+        <button class="btn btn-outline-light" type="submit">Search</button>
+      </form>
+      <ul class="navbar-nav mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="/login">Login</a>
+        </li>
+      </ul>
     </div>
+  </div>
 </nav>
