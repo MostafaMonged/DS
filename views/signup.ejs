@@ -38,7 +38,7 @@
       <%- include('navbar.ejs') %>
       <main class="vh-100 gradient-custom">
         <div class="signup-form">
-          <form action="" method="post">
+          <form action="/signup" method="post">
             <h2>Register</h2>
             <p class="hint-text">
               Create your account. It's free and only takes a minute.
@@ -93,7 +93,8 @@
               />
             </div>
             <div class="form-group" >
-              <select class="form-select">
+              <select class="form-select" required name = "type">
+                <option value="" disabled selected>Type</option>
                 <option value="1">Customer</option>
                 <option value="2">Seller</option>
               </select>
