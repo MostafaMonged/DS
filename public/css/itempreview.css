@@ -1,0 +1,95 @@
+/* Main body */
+main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #161515;
+  font-family: Arial, sans-serif;
+}
+body {
+  overflow-x: hidden;
+}
+
+.item-preview {
+  width: 90%;
+  height: 90%;
+  padding: 40px;
+  background-color: #eee;
+  border-radius: 8px;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.item-preview img {
+  width: 40%;
+  height: 40%;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  float: left;
+  margin-right: 20px;
+}
+
+.item-preview h2 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.item-preview .description {
+  font-size: 21px;
+  line-height: 1.5;
+  margin-bottom: 10px;
+  color: #777;
+}
+
+.item-preview .price {
+  font-size: 25px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #555;
+}
+
+.item-preview button {
+  background-color: #4285f4;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  width: 10%;
+}
+
+.item-preview::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Dark mode */
+body.dark {
+  background-color: #222;
+  color: #fff;
+}
+
+.item-preview.dark {
+  background-color: #333;
+  color: #fff;
+}
+
+.item-preview.dark h2,
+.item-preview.dark .price {
+  color: #eee;
+}
+
+.item-preview.dark .description {
+  color: #ccc;
+}
+
+.item-preview.dark button {
+  background-color: #fff;
+  color: #333;
+}

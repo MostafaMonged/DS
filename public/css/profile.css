@@ -1,0 +1,132 @@
+/* Main body */
+main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #161515;
+  font-family: Arial, sans-serif;
+}
+
+.profile {
+  width: 90%;
+  height: 800px;
+  padding: 40px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+}
+
+.profile-picture {
+  margin-right: 0px;
+}
+
+.profile-picture img {
+  width: 80%;
+  height: 50%;
+}
+
+.profile-info {
+  flex: 1;
+  text-align: left;
+}
+
+.profile-info h2 {
+  font-size: 35px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.profile-info p {
+  font-size: 21px;
+  color: #777;
+  margin-bottom: 7px;
+}
+
+.visa-card {
+  margin-top: 20px;
+}
+
+.visa-card img {
+  width: 200px;
+  height: auto;
+}
+
+.update-info-button {
+  margin-top: 30px;
+}
+
+.update-info-button button {
+  background-color: #4285f4;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.update-info-button button:hover {
+  background-color: #3272c8;
+}
+
+/* Dark mode */
+body.dark {
+  background-color: #222;
+  color: #fff;
+}
+
+.profile.dark {
+  background-color: #333;
+  color: #fff;
+}
+
+.profile.dark .profile-info h2 {
+  color: #eee;
+}
+
+.profile.dark .profile-info p {
+  color: #ccc;
+}
+
+.profile-info button {
+  background-color: #4285f4;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.profile-info button:hover {
+  background-color: #3272c8;
+}
+
+/* Dark mode */
+body.dark {
+  background-color: #222;
+  color: #fff;
+}
+
+.profile.dark {
+  background-color: #333;
+  color: #fff;
+}
+
+.profile.dark .profile-info h2 {
+  color: #eee;
+}
+
+.profile.dark .profile-info p {
+  color: #ccc;
+}
+
+.profile.dark button {
+  background-color: #fff;
+  color: #333;
+}
