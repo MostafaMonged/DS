@@ -25,7 +25,7 @@
     <%- include('navbar.ejs') %>
       <main class="vh-100 gradient-custom">
         <div class="signup-form">
-          <form action="/signup" method="post">
+          <form action="/signup" method="POST" id="signupForm" onload="run">
             <h2>Register</h2>
             <p class="hint-text">
               Create your account. It's free and only takes a minute.
@@ -42,15 +42,14 @@
                 </div>
               </div>
             </div>
+            <div id="errorContainer" class="form-control"
+              data-error-message="<%- typeof error !== 'undefined' ? error : '' %>" style="display: none; color: red;">
+            </div>
             <div class="form-group">
               <input type="email" class="form-control" name="email" placeholder="Email" required="required" />
             </div>
             <div class="form-group">
               <input type="password" class="form-control" name="password" placeholder="Password" required="required" />
-            </div>
-            <div class="form-group">
-              <input type="password" class="form-control" name="confirm_password" placeholder="Confirm Password"
-                required="required" />
             </div>
             <div class="form-group">
               <select class="form-select" required name="type">
@@ -72,27 +71,25 @@
       </main>
   </div>
   <script>
-    // Handle form submission
-    document.getElementById('signupForm').addEventListener('submit', function (event) {
-      event.preventDefault();
-
-      const emailInput = document.getElementsByName('email')[0];
-      const errorContainer = document.getElementById('error');
-      const email = emailInput.value;
-
-      // Check if email is empty
-      if (!email) {
-        errorContainer.textContent = 'Email is required';
-        return;
-      }
-
-      // Clear previous error message
-      errorContainer.textContent = '';
-
-      // Submit the form
-      this.submit();
-    });
+    const error = `<%- typeof error !== 'undefined' ? error : '' %>`;
+    const existingUser = `<%- typeof existingUser !== 'undefined' ? existingUser : '' %>`;
   </script>
+
+  <!-- Your script tag -->
+  <script>
+    // Use the error variable here
+    const errorContainer = document.getElementById('errorContainer');
+    if (error) {
+      errorContainer.textContent = error;
+      errorContainer.style.display = 'block';
+    }
+    console.log(existingUser);
+    const user = existingUser ? JSON.parse(existingUser) : null;
+    document.getElementsByName('email')[0].value = existingUser ? existingUser.email : '';
+    document.getElementsByName('first_name')[0].value = existingUser ? existingUser.first_name : '';
+    document.getElementsByName('last_name')[0].value = existingUser ? existingUser.last_name : '';
+  </script>
+
 </body>
 
 </html>
