@@ -83,11 +83,6 @@
       errorContainer.textContent = error;
       errorContainer.style.display = 'block';
     }
-    console.log(existingUser);
-    const user = existingUser ? JSON.parse(existingUser) : null;
-    document.getElementsByName('email')[0].value = existingUser ? existingUser.email : '';
-    document.getElementsByName('first_name')[0].value = existingUser ? existingUser.first_name : '';
-    document.getElementsByName('last_name')[0].value = existingUser ? existingUser.last_name : '';
   </script>
 
 </body>

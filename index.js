@@ -28,8 +28,11 @@ app.engine('ejs', ejs.renderFile);
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views');
 app.use(express.static(__dirname + '/public'));
+
+var CurrentUser;
+
 app.get('/', (req, res) => {
-  res.render('home', { pageTitle: 'Home' });
+  res.render('home', { user: CurrentUser });
 });
 app.get('/signup', (req, res) => {
   res.render('signup', { pageTitle: 'SignUp' });
@@ -73,10 +76,11 @@ app.post('/signup', async (req, res) => {
     // Check if the email already exists in the database
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.render('signup', { error: 'Email already exists', existingUser: existingUser });
+      return res.render('signup', { error: 'Email already exists', existingUser: User });
     }
     await newUser.save();
-    res.status(200).json({ message: 'User registered successfully' });
+    CurrentUser = newUser;
+    res.render('home', { user: CurrentUser });
   } catch (error) {
     console.error('Error during signup:', error);
     res.status(500).json({ error: 'Server error' });
@@ -90,7 +94,6 @@ app.post('/login', async (req, res) => {
   try {
     // Find the user in the database based on the email
     const user = await User.findOne({ email });
-    console.log(user);
     // If the user does not exist, return an error
     if (!user) {
       return res.status(400).json({ error: 'User doesnot exist' });
@@ -107,7 +110,8 @@ app.post('/login', async (req, res) => {
       return res.status(400).json({ error: 'Wrong Password' });
     }
     // Passwords match, user is authenticated
-    res.status(200).json({ message: 'Login successful' });
+    CurrentUser = user;
+    res.render('home', { user })
   } catch (error) {
     console.error('Error during login:', error);
     res.status(500).json({ error: 'Server error' });
