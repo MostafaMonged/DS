@@ -49,6 +49,18 @@ app.get('/cart', (req, res) => {
 app.get('/checkout', (req, res) => {
   res.render('checkout', { pageTitle: 'Checkout' });
 });
+app.get('/profile', (req, res) => {
+    res.render('profile', { pageTitle: 'Profile' });
+});
+app.get('/itempreview', (req, res) => {
+    res.render('itempreview', { pageTitle: 'Itempreview' });
+});
+app.get('/admin', (req, res) => {
+    res.render('admin', { pageTitle: 'Admin' });
+});
+app.get('/seller', (req, res) => {
+    res.render('seller', { pageTitle: 'Seller' });
+});
 
 app.listen(3000, () => {
   console.log('Server is running on port 3000');
