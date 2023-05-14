@@ -40,7 +40,9 @@
       </form>
       <% if (typeof user !=='undefined' ) { %>
       <ul class="navbar-nav mb-2 mb-lg-0">
-        <div><%= user.first_name %></div>
+        <li class="nav-item">
+          <a class="nav-link" href="/profile"><%= user.first_name %></a>
+        </li>
       </ul>
       <% } %> <% if (typeof user==='undefined' ) { %>
       <ul class="navbar-nav mb-2 mb-lg-0" id="login">
