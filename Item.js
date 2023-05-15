@@ -8,14 +8,14 @@ const itemSchema = new mongoose.Schema({
         required: true
     },
     price: {
-        type: Float32Array,
+        type: Number,
         required: true
     },
-    Description: {
+    description: {
         type: String,
         required: true
     },
-    Category: {
+    category: {
         type: String,
         required: true
     },
@@ -24,7 +24,7 @@ const itemSchema = new mongoose.Schema({
         required: true
     },
     seller: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true
     }

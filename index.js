@@ -7,6 +7,7 @@ const uri = "mongodb+srv://Ahmed200k:Aeuzilua7mDbKK2q@parallelanddistributed.ukt
 const User = require('./User');
 const crypto = require('crypto');
 const multer = require('multer');
+const Item = require('./Item');
 const salt = crypto.randomBytes(16).toString('hex');
 
 
@@ -25,14 +26,16 @@ mongoose
     console.error("Error connecting to MongoDB:", error);
   });
 
-const storage = multer.diskStorage({
-  destination: 'public/uploads/',
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './uploads')
+  },
   filename: function (req, file, cb) {
-    cb(null, file.fieldname + '-' + Date.now() + '.' + file.originalname.split('.').pop());
+    cb(null, file.originalname)
   }
-});
-const upload = multer({ storage: storage });
+})
 
+const upload = multer({ storage: storage })
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.engine("ejs", require("express-ejs-extend")); // add this line
@@ -44,8 +47,9 @@ app.use(express.static(__dirname + "/public"));
 var CurrentUser;
 var userresetpassword;
 
-app.get("/", (req, res) => {
-  res.render("home", { user: CurrentUser });
+app.get("/", async (req, res) => {
+  const items = await Item.find({});
+  res.render("home", { user: CurrentUser, items: items });
 });
 app.get("/signup", (req, res) => {
   if (CurrentUser != undefined) {
@@ -86,9 +90,7 @@ app.get('/admin', (req, res) => {
   } else res.render('admin', { user: CurrentUser });
 });
 app.get('/seller', (req, res) => {
-  if (CurrentUser == undefined || CurrentUser.type != 'Seller' || CurrentUser.type != 'Admin') {
-    res.redirect('/login');
-  } else res.render('seller', { user: CurrentUser });
+  res.render('seller', { user: CurrentUser });
 });
 app.get('/signout', (req, res) => {
   CurrentUser = undefined;
@@ -137,7 +139,7 @@ app.post("/signup", async (req, res) => {
     }
     await newUser.save();
     CurrentUser = newUser;
-    res.render("home", { user: CurrentUser });
+    res.redirect('/');
   } catch (error) {
     console.error("Error during signup:", error);
     res.status(500).json({ error: "Server error" });
@@ -166,7 +168,7 @@ app.post("/login", async (req, res) => {
     }
     // Passwords match, user is authenticated
     CurrentUser = user;
-    res.render("home", { user });
+    res.redirect("/");
   } catch (error) {
     console.error("Error during login:", error);
     res.status(500).json({ error: "Server error" });
@@ -229,5 +231,19 @@ app.post("/newpassword", async (req, res) => {
   await user.save();
 
   // Provide feedback to the user that their password has been reset
+  res.redirect('/');
+});
+app.post("/additem", upload.single('itemimage'), async (req, res) => {
+  const imagePath = 'uploads/' + req.file.filename;
+  const { itemname, itemprice, itemdescription, itemcategory } = req.body;
+  const newitem = new Item({
+    name: itemname,
+    price: itemprice,
+    description: itemdescription,
+    category: itemcategory,
+    imagepath: imagePath,
+    seller: CurrentUser
+  });
+  await newitem.save();
   res.redirect('/');
 });
