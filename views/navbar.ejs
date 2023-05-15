@@ -16,12 +16,11 @@
         <li class="nav-item">
           <a class="nav-link" href="/cart">Cart</a>
         </li>
-        <% } %>
-        <% if (typeof user !=='undefined' && user.type === 'Seller' ) { %>
-        <li class="nav-item">
-          <a class="nav-link" href="/seller">Sell</a>
-        </li>
-        <% } %>
+        <<<<<<< HEAD <% } %> <% if (typeof user !=='undefined' && user.type === 'Seller' ) { %>=======<% if (typeof user !=='undefined' ) { %>>>>>>>> Ahmed-Khaled
+          <li class="nav-item">
+            <a class="nav-link" href="/seller">Sell</a>
+          </li>
+          <% } %>
       </ul>
       <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
         <% if (typeof user !=='undefined' ) { %>
@@ -40,7 +39,6 @@
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
         <button class="btn btn-outline-light" type="submit">Search</button>
       </form>
-
       <% if (typeof user==='undefined' ) { %>
       <ul class="navbar-nav mb-2 mb-lg-0" id="login">
         <li class="nav-item">
