@@ -28,8 +28,15 @@
               <div class="card">
                 <img src="<%- items[i].imagepath %>" alt="Category Image" class="card-img-top" style="height: 270px;" />
                 <div class="card-body">
-                  <h5 class="card-title"><%- items[i].category %></h5>
-                  <a href="#" class="btn btn-primary">Add to Cart</a>
+                  <h5 class="card-title">Item:<%- items[i].name %></h5>
+                  <p class="card-text"> $<%- items[i].price %> </p>
+                  <form action="/shop" method="post" class="form_class">
+                    <div style="display: none;">
+                      <input type="text" name="userid" value="<%- user._id %>">
+                      <input type="text" name="itemid" value="<%- items[i]._id %>">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add to Cart</button>
+                  </form>
                 </div>
               </div>
             </div>

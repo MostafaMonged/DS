@@ -8,6 +8,7 @@ const User = require('./User');
 const crypto = require('crypto');
 const multer = require('multer');
 const Item = require('./Item');
+const Cart = require('./Cart');
 const salt = crypto.randomBytes(16).toString('hex');
 
 
@@ -85,11 +86,38 @@ app.get('/shop', async (req, res) => {
     res.render('shop', { user: CurrentUser, items: items });
   }
 });
-app.get('/cart', (req, res) => {
-  console.log(CurrentUser.type);
+app.get('/home', async (req, res) => {
+  if (CurrentUser == undefined) {
+    res.redirect('/login');
+  } else {
+    const items = await Item.find({ category: 'home' });
+    res.render('shop', { user: CurrentUser, items: items });
+  }
+});
+app.get('/book', async (req, res) => {
+  if (CurrentUser == undefined) {
+    res.redirect('/login');
+  } else {
+    const items = await Item.find({ category: 'books' });
+    res.render('shop', { user: CurrentUser, items: items });
+  }
+});
+app.get('/cart', async (req, res) => {
   if (CurrentUser === undefined || CurrentUser.type === 'Seller') {
     res.redirect('/');
-  } else res.render('cart', { user: CurrentUser });
+  } else {
+    const cartitems = [];
+    const cart = await Cart.find({ user: CurrentUser._id });
+    console.log(cart);
+    await Promise.all(cart.map(async (cartItem) => {
+      const item = await Item.findById(cartItem.item);
+      if (item) {
+        cartitems.push(item);
+      }
+    }));
+    console.log(cartitems);
+    res.render('cart', { user: CurrentUser, items: cartitems });
+  }
 });
 app.get('/checkout', (req, res) => {
   if (CurrentUser === undefined || CurrentUser.type === 'Seller') {
@@ -274,16 +302,37 @@ app.post("/newpassword", async (req, res) => {
   res.redirect('/');
 });
 app.post("/additem", upload.single('itemimage'), async (req, res) => {
-  const imagePath = 'uploads/' + req.file.filename;
-  const { itemname, itemprice, itemdescription, itemcategory } = req.body;
-  const newitem = new Item({
-    name: itemname,
-    price: itemprice,
-    description: itemdescription,
-    category: itemcategory,
-    imagepath: imagePath,
-    seller: CurrentUser
-  });
-  await newitem.save();
-  res.redirect('/');
+  try {
+    const imagePath = 'uploads/' + req.file.filename;
+    const { itemname, itemprice, itemdescription, itemcategory } = req.body;
+    const newitem = new Item({
+      name: itemname,
+      price: itemprice,
+      description: itemdescription,
+      category: itemcategory,
+      imagepath: imagePath,
+      seller: CurrentUser
+    });
+    await newitem.save();
+    res.redirect('/');
+  } catch (error) {
+    console.error("Error during Loading:", error);
+    res.redirect('/');;
+  }
+});
+app.post("/shop", async (req, res) => {
+  try {
+    const { userid, itemid } = req.body;
+    const user = await User.findOne({ _id: userid });
+    const item = await Item.findOne({ _id: itemid });
+    const newcart = new Cart({
+      user: user,
+      item: item
+    });
+    await newcart.save();
+    res.redirect(req.headers.referer);
+  } catch (error) {
+    console.error("Error during loading:", error);
+    res.redirect('/');;
+  }
 });

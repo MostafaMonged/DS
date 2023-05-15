@@ -2,7 +2,9 @@
   background-color: #1a1a1a;
   padding: 100px 0;
 }
-
+.card{
+  height: 500px;
+}
 .featured-products h2 {
   font-size: 36px;
   font-weight: 700;
