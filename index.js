@@ -6,7 +6,9 @@ const mongoose = require('mongoose');
 const uri = "mongodb+srv://Ahmed200k:Aeuzilua7mDbKK2q@parallelanddistributed.ukthwyn.mongodb.net/Parallel_Project";
 const User = require('./User');
 const crypto = require('crypto');
+const multer = require('multer');
 const salt = crypto.randomBytes(16).toString('hex');
+
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 // Connect to MongoDB
@@ -21,6 +23,15 @@ mongoose.connect(uri, {
   .catch((error) => {
     console.error('Error connecting to MongoDB:', error);
   });
+
+const storage = multer.diskStorage({
+  destination: 'public/uploads/',
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + '-' + Date.now() + '.' + file.originalname.split('.').pop());
+  }
+});
+const upload = multer({ storage: storage });
+
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.engine('ejs', require('express-ejs-extend')); // add this line
@@ -38,30 +49,33 @@ app.get('/signup', (req, res) => {
   res.render('signup', { pageTitle: 'SignUp' });
 });
 app.get('/login', (req, res) => {
-  res.render('login', { pageTitle: 'Login' });
+  res.render('login', { user: CurrentUser });
 });
 app.get('/shop', (req, res) => {
-  res.render('shop', { pageTitle: 'Shop' });
+  res.render('shop', { user: CurrentUser });
 });
 app.get('/cart', (req, res) => {
-  res.render('cart', { pageTitle: 'Cart' });
+  res.render('cart', { user: CurrentUser });
 });
 app.get('/checkout', (req, res) => {
-  res.render('checkout', { pageTitle: 'Checkout' });
+  res.render('checkout', { user: CurrentUser });
 });
 app.get('/profile', (req, res) => {
-    res.render('profile', { pageTitle: 'Profile' });
+  res.render('profile', { user: CurrentUser });
 });
 app.get('/itempreview', (req, res) => {
-    res.render('itempreview', { pageTitle: 'Itempreview' });
+  res.render('itempreview', { user: CurrentUser });
 });
 app.get('/admin', (req, res) => {
-    res.render('admin', { pageTitle: 'Admin' });
+  res.render('admin', { user: CurrentUser });
 });
 app.get('/seller', (req, res) => {
-    res.render('seller', { pageTitle: 'Seller' });
+  res.render('seller', { user: CurrentUser });
 });
-
+app.get('/signout', (req, res) => {
+  CurrentUser = undefined;
+  res.render('home', { user: CurrentUser });
+});
 app.listen(3000, () => {
   console.log('Server is running on port 3000');
 });

@@ -12,24 +12,34 @@
         <li class="nav-item">
           <a class="nav-link" href="/shop">Shop</a>
         </li>
+        <% if (typeof user !=='undefined' && user.type === 'Customer' ) { %>
         <li class="nav-item">
           <a class="nav-link" href="/cart">Cart</a>
         </li>
+        <% } %>
+        <% if (typeof user !=='undefined' && user.type === 'Seller' ) { %>
         <li class="nav-item">
           <a class="nav-link" href="/seller">Sell</a>
         </li>
+        <% } %>
       </ul>
+      <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
+        <% if (typeof user !=='undefined' ) { %>
+        <li class="nav-item dropdown mb-2 mb-lg-0">
+          <a class="nav-link dropdown-toggle" style="color:white" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <%= user.first_name %>
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+            <li><a class="dropdown-item" href="/profile">Profile</a></li>
+            <li><a class="dropdown-item" href="/signout">Sign Out</a></li>
+          </ul>
+        </li>
+      </ul>
+      <% } %>
       <form class="d-flex">
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
         <button class="btn btn-outline-light" type="submit">Search</button>
       </form>
-      <% if (typeof user !=='undefined' ) { %>
-      <ul class="navbar-nav mb-2 mb-lg-0">
-        <div>
-          <%= user.first_name %>
-        </div>
-      </ul>
-      <% } %>
 
       <% if (typeof user==='undefined' ) { %>
       <ul class="navbar-nav mb-2 mb-lg-0" id="login">
