@@ -15,7 +15,7 @@ mongoose.connect(uri, {
   useUnifiedTopology: true,
 })
   .then(() => {
-    console.log('Connected to MongoDB');
+    console.log('Connected to MongoDB successfully');
     // Start using Mongoose here
   })
   .catch((error) => {
@@ -50,16 +50,16 @@ app.get('/checkout', (req, res) => {
   res.render('checkout', { pageTitle: 'Checkout' });
 });
 app.get('/profile', (req, res) => {
-    res.render('profile', { pageTitle: 'Profile' });
+  res.render('profile', { pageTitle: 'Profile' });
 });
 app.get('/itempreview', (req, res) => {
-    res.render('itempreview', { pageTitle: 'Itempreview' });
+  res.render('itempreview', { pageTitle: 'Itempreview' });
 });
 app.get('/admin', (req, res) => {
-    res.render('admin', { pageTitle: 'Admin' });
+  res.render('admin', { pageTitle: 'Admin' });
 });
 app.get('/seller', (req, res) => {
-    res.render('seller', { pageTitle: 'Seller' });
+  res.render('seller', { pageTitle: 'Seller' });
 });
 
 app.listen(3000, () => {
