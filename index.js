@@ -28,10 +28,13 @@ mongoose
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, './uploads')
+    cb(null, './public/uploads')
   },
   filename: function (req, file, cb) {
-    cb(null, file.originalname)
+    // Generate a unique filename by adding a timestamp
+    const timestamp = Date.now();
+    const extension = file.originalname.split('.').pop();
+    cb(null, `${timestamp}.${extension}`);
   }
 })
 
@@ -65,42 +68,49 @@ app.get('/shop', (req, res) => {
   } else res.render('shop', { user: CurrentUser });
 });
 app.get('/cart', (req, res) => {
-  if (CurrentUser == undefined || CurrentUser.type != 'Customer' || CurrentUser.type != 'Admin') {
-    res.redirect('/login');
+  console.log(CurrentUser.type);
+  if (CurrentUser === undefined || CurrentUser.type === 'Seller') {
+    res.redirect('/');
   } else res.render('cart', { user: CurrentUser });
 });
 app.get('/checkout', (req, res) => {
-  if (CurrentUser == undefined || CurrentUser.type != 'Customer' || CurrentUser.type != 'Admin') {
-    res.redirect('/login');
+  if (CurrentUser === undefined || CurrentUser.type === 'Seller') {
+    res.redirect('/');
   } else res.render('checkout', { user: CurrentUser });
 });
 app.get('/profile', (req, res) => {
-  if (CurrentUser == undefined) {
+  if (CurrentUser === undefined) {
     res.redirect('/login');
   } else res.render('profile', { user: CurrentUser });
 });
 app.get('/itempreview', (req, res) => {
-  if (CurrentUser == undefined || CurrentUser.type != 'Customer' || CurrentUser.type != 'Admin') {
-    res.redirect('/login');
+  if (CurrentUser == undefined) {
+    res.redirect('/');
   } else res.render('itempreview', { user: CurrentUser });
 });
+
 app.get('/admin', (req, res) => {
-  if (CurrentUser == undefined || CurrentUser.type != 'Admin') {
+  if (CurrentUser == undefined || CurrentUser.type !== 'Admin') {
     res.redirect('/login');
   } else res.render('admin', { user: CurrentUser });
 });
+
 app.get('/seller', (req, res) => {
-  res.render('seller', { user: CurrentUser });
+  if (CurrentUser == undefined || CurrentUser.type === 'Customer')
+    res.render('seller', { user: CurrentUser });
 });
+
 app.get('/signout', (req, res) => {
   CurrentUser = undefined;
   res.redirect('/');
 });
+
 app.get("/forgotpassword", (req, res) => {
   if (CurrentUser != undefined) {
     res.redirect('/');
   } else res.render("forgotpassword", { pageTitle: "Forgotpassword" });
 });
+
 app.get("/adminlogin", (req, res) => {
   res.render("adminlogin", { pageTitle: "Adminlogin" });
 });
@@ -207,9 +217,6 @@ app.post("/adminlogin", async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 });
-
-// Temporary storage for password reset tokens
-const passwordResetTokens = new Map();
 
 // Route for handling the "Forgot Password" form submission
 app.post("/forgotpassword", async (req, res) => {
