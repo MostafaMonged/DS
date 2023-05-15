@@ -25,11 +25,9 @@
         </div>
         <% if (typeof user !=='undefined' ) { %>
         <div class="profile-info">
-          <h2><%- user.first_name %></h2>
-          <p><%- user.email %></p>
-          <p>Address: 123 Main Street, City, Country</p>
-          <p>Phone: +1 123-456-7890</p>
-          <p>Visa: **** **** **** **** ****</p>
+          <h2>Name: <%- user.first_name %></h2>
+          <p>Email: <%- user.email %></p>
+          <p>Phone: <%- user.phone %></p>
           <button>Edit Profile</button>
         </div>
         <% } %>

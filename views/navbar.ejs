@@ -12,12 +12,12 @@
         <li class="nav-item">
           <a class="nav-link" href="/shop">Shop</a>
         </li>
-        <% if (typeof user !=='undefined' && user.type === 'Customer' ) { %>
+        <% if (typeof user !=='undefined' && (user.type === 'Customer' || user.type === 'Admin')) { %>
         <li class="nav-item">
           <a class="nav-link" href="/cart">Cart</a>
         </li>
         <% } %>
-        <% if (typeof user !=='undefined' && user.type === 'Seller' ) { %>
+        <% if (typeof user !=='undefined' && (user.type === 'Seller' || user.type === 'Admin')) { %>
         <li class="nav-item">
           <a class="nav-link" href="/seller">Sell</a>
         </li>

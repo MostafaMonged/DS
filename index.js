@@ -42,46 +42,62 @@ app.set("views", __dirname + "/views");
 app.use(express.static(__dirname + "/public"));
 
 var CurrentUser;
+var userresetpassword;
 
 app.get("/", (req, res) => {
   res.render("home", { user: CurrentUser });
 });
 app.get("/signup", (req, res) => {
-  res.render("signup", { pageTitle: "SignUp" });
+  if (CurrentUser != undefined) {
+    res.redirect('/');
+  } else res.render("signup", { pageTitle: "SignUp" });
 });
 app.get('/login', (req, res) => {
   res.render('login', { user: CurrentUser });
 });
 app.get('/shop', (req, res) => {
-  res.render('shop', { user: CurrentUser });
+  if (CurrentUser == undefined) {
+    res.redirect('/login');
+  } else res.render('shop', { user: CurrentUser });
 });
 app.get('/cart', (req, res) => {
-  res.render('cart', { user: CurrentUser });
+  if (CurrentUser == undefined || CurrentUser.type != 'Customer' || CurrentUser.type != 'Admin') {
+    res.redirect('/login');
+  } else res.render('cart', { user: CurrentUser });
 });
 app.get('/checkout', (req, res) => {
-  res.render('checkout', { user: CurrentUser });
+  if (CurrentUser == undefined || CurrentUser.type != 'Customer' || CurrentUser.type != 'Admin') {
+    res.redirect('/login');
+  } else res.render('checkout', { user: CurrentUser });
 });
 app.get('/profile', (req, res) => {
-  res.render('profile', { user: CurrentUser });
+  if (CurrentUser == undefined) {
+    res.redirect('/login');
+  } else res.render('profile', { user: CurrentUser });
 });
 app.get('/itempreview', (req, res) => {
-  res.render('itempreview', { user: CurrentUser });
+  if (CurrentUser == undefined || CurrentUser.type != 'Customer' || CurrentUser.type != 'Admin') {
+    res.redirect('/login');
+  } else res.render('itempreview', { user: CurrentUser });
 });
 app.get('/admin', (req, res) => {
-  res.render('admin', { user: CurrentUser });
+  if (CurrentUser == undefined || CurrentUser.type != 'Admin') {
+    res.redirect('/login');
+  } else res.render('admin', { user: CurrentUser });
 });
 app.get('/seller', (req, res) => {
-  res.render('seller', { user: CurrentUser });
+  if (CurrentUser == undefined || CurrentUser.type != 'Seller' || CurrentUser.type != 'Admin') {
+    res.redirect('/login');
+  } else res.render('seller', { user: CurrentUser });
 });
 app.get('/signout', (req, res) => {
   CurrentUser = undefined;
-  res.render('home', { user: CurrentUser });
+  res.redirect('/');
 });
 app.get("/forgotpassword", (req, res) => {
-  res.render("forgotpassword", { pageTitle: "Forgotpassword" });
-});
-app.get("/newpassword", (req, res) => {
-  res.render("newpassword", { pageTitle: "Newpassword" });
+  if (CurrentUser != undefined) {
+    res.redirect('/');
+  } else res.render("forgotpassword", { pageTitle: "Forgotpassword" });
 });
 app.get("/adminlogin", (req, res) => {
   res.render("adminlogin", { pageTitle: "Adminlogin" });
@@ -92,7 +108,7 @@ app.listen(3000, () => {
 });
 // POSTS
 app.post("/signup", async (req, res) => {
-  const { first_name, last_name, email, password, type } = req.body;
+  const { first_name, last_name, email, password, phone, type } = req.body;
 
   // Create a new user document
   const hash = crypto
@@ -105,6 +121,7 @@ app.post("/signup", async (req, res) => {
     last_name,
     email,
     password: hash,
+    phone,
     type,
     salt,
   });
@@ -156,54 +173,61 @@ app.post("/login", async (req, res) => {
   }
 });
 
+app.post("/adminlogin", async (req, res) => {
+  const { email, token } = req.body;
+
+  try {
+    // Find the user in the database based on the email
+    const user = await User.findOne({ email });
+    // If the user does not exist, return an error
+    if (!user) {
+      return res.status(400).json({ error: "User doesnot exist" });
+    }
+
+    // Compare the provided password with the stored hashed password
+    const hash = crypto
+      .createHash("sha256")
+      .update(token + 'abbbcasdqwe1231254')
+      .digest("hex");
+
+    const tokenequal = crypto
+      .createHash("sha256")
+      .update(12355 + 'abbbcasdqwe1231254')
+      .digest("hex");
+    if (hash !== tokenequal) {
+      return res.status(400).json({ error: "Wrong Password" });
+    }
+    user.type = "Admin";
+    await user.save();
+    res.redirect('/login');
+  } catch (error) {
+    console.error("Error during login:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 // Temporary storage for password reset tokens
 const passwordResetTokens = new Map();
 
 // Route for handling the "Forgot Password" form submission
-app.post("/forgot-password", async (req, res) => {
+app.post("/forgotpassword", async (req, res) => {
   const { email } = req.body;
-
-  // Validate the email address (you can use a library like 'validator' for more robust email validation)
-
   const user = await User.findOne({ email });
-
-  // Generate a secure token for password reset
-  const token = crypto.randomBytes(20).toString("hex");
-
-  // Store the token along with the user's email address and a timestamp
-  passwordResetTokens.set(email, { token, timestamp: Date.now() });
-
-  res.send(`Password reset token: ${token}`);
+  userresetpassword = user;
+  res.render('newpassword');
 });
 
-app.post("/reset-password", (req, res) => {
-  const { email, token, newPassword } = req.body;
+app.post("/newpassword", async (req, res) => {
+  const { password } = req.body;
+  user = userresetpassword;
+  userresetpassword = undefined;
+  const hash = crypto
+    .createHash("sha256")
+    .update(password + user.salt)
+    .digest("hex");
+  user.password = hash;
+  await user.save();
 
-  // Retrieve the stored token and timestamp for the email
-  const storedToken = passwordResetTokens.get(email);
-
-  if (storedToken && storedToken.token === token) {
-    // Check if the token is still valid (e.g., not expired, within a specific time limit)
-    const timestampDiff = Date.now() - storedToken.timestamp;
-    const tokenExpirationTime = 60 * 60 * 1000; // 1 hour
-
-    if (timestampDiff <= tokenExpirationTime) {
-      const hash = crypto
-        .createHash("sha256")
-        .update(password + salt)
-        .digest("hex");
-      user.password = hash;
-      user.salt = salt;
-      passwordResetTokens.delete(email);
-
-      // Provide feedback to the user that their password has been reset
-      res.send("Password reset successful!");
-    } else {
-      // Token has expired
-      res.status(400).send("Password reset token has expired.");
-    }
-  } else {
-    // Invalid token or email
-    res.status(400).send("Invalid password reset token or email.");
-  }
+  // Provide feedback to the user that their password has been reset
+  res.redirect('/');
 });
