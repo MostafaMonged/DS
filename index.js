@@ -51,8 +51,7 @@ var CurrentUser;
 var userresetpassword;
 
 app.get("/", async (req, res) => {
-  const items = await Item.find({});
-  res.render("home", { user: CurrentUser, items: items });
+  res.render("home", { user: CurrentUser });
 });
 app.get("/signup", (req, res) => {
   if (CurrentUser != undefined) {
@@ -62,10 +61,29 @@ app.get("/signup", (req, res) => {
 app.get('/login', (req, res) => {
   res.render('login', { user: CurrentUser });
 });
-app.get('/shop', (req, res) => {
+app.get('/electronic', async (req, res) => {
   if (CurrentUser == undefined) {
     res.redirect('/login');
-  } else res.render('shop', { user: CurrentUser });
+  } else {
+    const items = await Item.find({ category: 'electronics' });
+    res.render('shop', { user: CurrentUser, items: items });
+  }
+});
+app.get('/clothing', async (req, res) => {
+  if (CurrentUser == undefined) {
+    res.redirect('/login');
+  } else {
+    const items = await Item.find({ category: 'clothing' });
+    res.render('shop', { user: CurrentUser, items: items });
+  }
+});
+app.get('/shop', async (req, res) => {
+  if (CurrentUser == undefined) {
+    res.redirect('/login');
+  } else {
+    const items = await Item.find({});
+    res.render('shop', { user: CurrentUser, items: items });
+  }
 });
 app.get('/cart', (req, res) => {
   console.log(CurrentUser.type);
@@ -96,8 +114,10 @@ app.get('/admin', (req, res) => {
 });
 
 app.get('/seller', (req, res) => {
-  if (CurrentUser == undefined || CurrentUser.type === 'Customer')
-    res.render('seller', { user: CurrentUser });
+  if (CurrentUser == undefined || CurrentUser.type === 'Customer') {
+    res.redirect('/login');
+  }
+  else res.render('seller', { user: CurrentUser });
 });
 
 app.get('/signout', (req, res) => {
@@ -152,7 +172,7 @@ app.post("/signup", async (req, res) => {
     res.redirect('/');
   } catch (error) {
     console.error("Error during signup:", error);
-    res.status(500).json({ error: "Server error" });
+    res.redirect('/');
   }
 });
 app.post("/login", async (req, res) => {
@@ -163,7 +183,7 @@ app.post("/login", async (req, res) => {
     const user = await User.findOne({ email });
     // If the user does not exist, return an error
     if (!user) {
-      return res.status(400).json({ error: "User doesnot exist" });
+      return res.redirect('/');
     }
 
     // Compare the provided password with the stored hashed password
@@ -181,7 +201,7 @@ app.post("/login", async (req, res) => {
     res.redirect("/");
   } catch (error) {
     console.error("Error during login:", error);
-    res.status(500).json({ error: "Server error" });
+    res.redirect('/');;
   }
 });
 
@@ -193,7 +213,7 @@ app.post("/adminlogin", async (req, res) => {
     const user = await User.findOne({ email });
     // If the user does not exist, return an error
     if (!user) {
-      return res.status(400).json({ error: "User doesnot exist" });
+      return res.redirect('/login');
     }
 
     // Compare the provided password with the stored hashed password
@@ -207,14 +227,14 @@ app.post("/adminlogin", async (req, res) => {
       .update(12355 + 'abbbcasdqwe1231254')
       .digest("hex");
     if (hash !== tokenequal) {
-      return res.status(400).json({ error: "Wrong Password" });
+      return res.redirect('/login');;
     }
     user.type = "Admin";
     await user.save();
     res.redirect('/login');
   } catch (error) {
     console.error("Error during login:", error);
-    res.status(500).json({ error: "Server error" });
+    res.redirect('/');;
   }
 });
 
