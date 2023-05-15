@@ -138,6 +138,7 @@ app.get("/adminlogin", (req, res) => {
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
 });
+
 // POSTS
 app.post("/signup", async (req, res) => {
   const { first_name, last_name, email, password, phone, type } = req.body;
@@ -164,7 +165,6 @@ app.post("/signup", async (req, res) => {
     if (existingUser) {
       return res.render("signup", {
         error: "Email already exists",
-        existingUser: User,
       });
     }
     await newUser.save();
@@ -183,7 +183,9 @@ app.post("/login", async (req, res) => {
     const user = await User.findOne({ email });
     // If the user does not exist, return an error
     if (!user) {
-      return res.redirect('/');
+      return res.render("login", {
+        error: "User doesn't Exist",
+      });
     }
 
     // Compare the provided password with the stored hashed password
@@ -194,7 +196,9 @@ app.post("/login", async (req, res) => {
     console.log(hash);
     console.log(user.password);
     if (hash !== user.password) {
-      return res.status(400).json({ error: "Wrong Password" });
+      return res.render("login", {
+        error: "Wrong Password",
+      });
     }
     // Passwords match, user is authenticated
     CurrentUser = user;
@@ -213,7 +217,9 @@ app.post("/adminlogin", async (req, res) => {
     const user = await User.findOne({ email });
     // If the user does not exist, return an error
     if (!user) {
-      return res.redirect('/login');
+      return res.render("adminlogin", {
+        error: "Email doesn't exists",
+      });
     }
 
     // Compare the provided password with the stored hashed password
@@ -227,11 +233,13 @@ app.post("/adminlogin", async (req, res) => {
       .update(12355 + 'abbbcasdqwe1231254')
       .digest("hex");
     if (hash !== tokenequal) {
-      return res.redirect('/login');;
+      return res.render("adminlogin", {
+        error: "Wrong Token",
+      });
     }
     user.type = "Admin";
     await user.save();
-    res.redirect('/login');
+    res.redirect('/login')
   } catch (error) {
     console.error("Error during login:", error);
     res.redirect('/');;
@@ -242,6 +250,11 @@ app.post("/adminlogin", async (req, res) => {
 app.post("/forgotpassword", async (req, res) => {
   const { email } = req.body;
   const user = await User.findOne({ email });
+  if (!user) {
+    return res.render("forgotpassword", {
+      error: "Email doesn't exists",
+    });
+  }
   userresetpassword = user;
   res.render('newpassword');
 });

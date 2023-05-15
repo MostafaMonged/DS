@@ -34,11 +34,13 @@
                     </p>
                     <form action="/adminlogin" method="post">
                       <div class="form-outline form-white mb-4">
+                        <label id="errorContaineremail" class="form-label" for="typeEmailX" data-error-message="<%- typeof error !== 'undefined' ? error : '' %>" style="display: none; color: red;"></label>
                         <label class="form-label" for="typeEmailX">Email:</label>
                         <input type="email" id="typeEmailX" class="form-control form-control-lg" placeholder="Enter email" name="email" />
                       </div>
                       <div class="form-outline form-white mb-4">
-                        <label class="form-label" for="typeEmailX">Token:</label>
+                        <label id="errorContainerpass" class="form-label" for="password" data-error-message="<%- typeof error !== 'undefined' ? error : '' %>" style="display: none; color: red;"></label>
+                        <label class="form-label" for="password">Token:</label>
                         <input type="password" id="token" class="form-control form-control-lg" placeholder="Enter Token" name="token" />
                       </div>
                       <div class="text-center">
@@ -53,6 +55,23 @@
             </div>
           </div>
         </div>
+        <script>
+          const error = `<%- typeof error !== 'undefined' ? error : '' %>`;
+        </script>
+
+        <!-- Your script tag -->
+        <script>
+          // Use the error variable here
+          const errorContainer = document.getElementById('errorContaineremail');
+          const errorContainer2 = document.getElementById('errorContainerpass');
+          if (error === "Email doesn't exists") {
+            errorContainer.textContent = error;
+            errorContainer.style.display = 'block';
+          } else if (error === "Wrong Token") {
+            errorContainer2.textContent = error;
+            errorContainer2.style.display = 'block';
+          }
+        </script>
       </section>
     </main>
   </div>
