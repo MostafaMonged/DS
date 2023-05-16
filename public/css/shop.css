@@ -42,3 +42,15 @@
 .featured-products .btn-primary:hover {
   background-color: #f44336;
 }
+.btn-danger {
+  font-size: 18px;
+  font-weight: 700;
+  padding: 10px 20px;
+  border-radius: 30px;
+
+  border: none;
+}
+
+.btn-danger:hover {
+  background-color: #ff1100;
+}

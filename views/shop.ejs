@@ -30,6 +30,7 @@
                 <div class="card-body">
                   <h5 class="card-title">Item:<%- items[i].name %></h5>
                   <p class="card-text"> $<%- items[i].price %> </p>
+                  <% if (typeof user !== 'undefined') { %>
                   <form action="/shop" method="post" class="form_class">
                     <div style="display: none;">
                       <input type="text" name="userid" value="<%- user._id %>">
@@ -37,6 +38,30 @@
                     </div>
                     <button type="submit" class="btn btn-primary">Add to Cart</button>
                   </form>
+                  <form action="/itempreview" method="post">
+                    <div style="display: none;">
+                      <input type="text" name="itemid" value="<%- items[i]._id %>">
+                    </div>
+                    <button class="btn btn-info mt-4">Check Item</button>
+                  </form>
+                  <% if (user.type === 'Admin') { %>
+                  <form action="/deleteitem" method="post">
+                    <div style="display: none;">
+                      <input type="text" name="userid" value="<%- user._id %>">
+                      <input type="text" name="itemid" value="<%- items[i]._id %>">
+                    </div>
+                    <button type="submit" class="btn btn-danger mt-4">Remove Item</button>
+                  </form>
+                  <% } %>
+                  <% } else { %>
+                  <div><a href="/login"><button class="btn btn-success">Login to Buy</button></a></div>
+                  <form action="/itempreview" method="post">
+                    <div style="display: none;">
+                      <input type="text" name="itemid" value="<%- items[i]._id %>">
+                    </div>
+                    <button class="btn btn-info mt-4">Check Item</button>
+                  </form>
+                  <% } %>
                 </div>
               </div>
             </div>

@@ -66,40 +66,24 @@ app.get('/login', (req, res) => {
   res.render('login', { user: CurrentUser });
 });
 app.get('/electronic', async (req, res) => {
-  if (CurrentUser == undefined) {
-    res.redirect('/login');
-  } else {
-    const items = await Item.find({ category: 'electronics' });
-    res.render('shop', { user: CurrentUser, items: items });
-  }
+  const items = await Item.find({ category: 'electronics' });
+  res.render('shop', { user: CurrentUser, items: items });
 });
 app.get('/clothing', async (req, res) => {
-  if (CurrentUser == undefined) {
-    res.redirect('/login');
-  } else {
-    const items = await Item.find({ category: 'clothing' });
-    res.render('shop', { user: CurrentUser, items: items });
-  }
+  const items = await Item.find({ category: 'clothing' });
+  res.render('shop', { user: CurrentUser, items: items });
 });
 app.get('/shop', async (req, res) => {
   const items = await Item.find({});
   res.render('shop', { user: CurrentUser, items: items });
 });
 app.get('/home', async (req, res) => {
-  if (CurrentUser == undefined) {
-    res.redirect('/login');
-  } else {
-    const items = await Item.find({ category: 'home' });
-    res.render('shop', { user: CurrentUser, items: items });
-  }
+  const items = await Item.find({ category: 'home' });
+  res.render('shop', { user: CurrentUser, items: items });
 });
 app.get('/book', async (req, res) => {
-  if (CurrentUser == undefined) {
-    res.redirect('/login');
-  } else {
-    const items = await Item.find({ category: 'books' });
-    res.render('shop', { user: CurrentUser, items: items });
-  }
+  const items = await Item.find({ category: 'books' });
+  res.render('shop', { user: CurrentUser, items: items });
 });
 app.get('/cart', async (req, res) => {
   if (CurrentUser === undefined || CurrentUser.type === 'Seller') {
@@ -139,8 +123,29 @@ app.get('/admin', async (req, res) => {
     res.redirect('/login');
 
   } else {
-    const items = await Item.find({});
-    res.render('admin', { user: CurrentUser, items: items });
+    const itemWithHighestCount = await Item.findOne()
+      .sort({ count: -1 })  // Sort by count in descending order
+      .limit(1);  // Retrieve only one item with the highest count
+
+    const itemWithHighestCountelec = await Item.findOne({ category: "electronic" })
+      .sort({ count: -1 })  // Sort by count in descending order
+      .limit(1);  // Retrieve only one item with the highest count
+    const itemWithHighestCounthome = await Item.findOne({ category: "home" })
+      .sort({ count: -1 })  // Sort by count in descending order
+      .limit(1);  // Retrieve only one item with the highest count
+    const itemWithHighestCountbook = await Item.findOne({ category: "book" })
+      .sort({ count: -1 })  // Sort by count in descending order
+      .limit(1);  // Retrieve only one item with the highest count
+    const itemWithHighestCountcloth = await Item.findOne({ category: "clothing" })
+      .sort({ count: -1 })  // Sort by count in descending order
+      .limit(1);  // Retrieve only one item with the highest count
+
+    const transaction = await Transaction.findOne()
+      .sort({ cost: -1 })  // Sort by count in descending order
+      .limit(1);  // Retrieve only one item with the highest count
+
+    highestcustomer = await User.findById({ _id: transaction.user });
+    res.render('admin', { user: CurrentUser, mostsold: itemWithHighestCount, BestTransaction: transaction, highestcustomer, itemWithHighestCountelec, itemWithHighestCounthome, itemWithHighestCountbook, itemWithHighestCountcloth });
   }
 });
 
@@ -192,7 +197,7 @@ app.listen(3000, () => {
 
 // POSTS
 app.post("/signup", async (req, res) => {
-  const { first_name, last_name, email, password, phone, type } = req.body;
+  const { first_name, last_name, email, password, phone, type, address } = req.body;
 
   // Create a new user document
   const hash = crypto
@@ -207,6 +212,7 @@ app.post("/signup", async (req, res) => {
     password: hash,
     phone,
     type,
+    address,
     salt,
   });
 
@@ -347,7 +353,6 @@ app.post("/shop", async (req, res) => {
     const user = await User.findOne({ _id: userid });
     const item = await Item.findOne({ _id: itemid });
     const cart = await Cart.findOne({ user: user._id, item: item._id })
-    console.log(cart);
     if (cart !== null) {
       if (cart.item.equals(item._id)) {
         cart.count += 1;
@@ -361,6 +366,35 @@ app.post("/shop", async (req, res) => {
       await newcart.save();
     }
     res.redirect(req.headers.referer);
+  } catch (error) {
+    console.error("Error during loading:", error);
+    res.redirect('/');
+  }
+});
+app.post("/shopsearch", async (req, res) => {
+
+  try {
+    const { search, minPrice, maxPrice, category } = req.body;
+    const query = {};
+
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } }
+      ];
+    }
+    if (minPrice) {
+      query.price = { $gte: minPrice };
+    }
+
+    if (maxPrice) {
+      query.price = { ...query.price, $lte: maxPrice };
+    }
+
+    if (category) {
+      query.category = category;
+    }
+    res.render('shop', { user: CurrentUser, items: items });
   } catch (error) {
     console.error("Error during loading:", error);
     res.redirect('/');
@@ -394,11 +428,12 @@ app.post("/deleteitem", async (req, res) => {
   try {
     const { itemid } = req.body;
     const item = await Item.findByIdAndDelete({ _id: itemid });
-    res.redirect('/myitems');
+    res.redirect(req.headers.referer);
   } catch (error) {
     res.redirect('/');
   }
 });
+
 app.post("/edittheitem", upload.single('itemimage'), async (req, res) => {
   try {
     if (itembeingedited === undefined) {
@@ -407,7 +442,6 @@ app.post("/edittheitem", upload.single('itemimage'), async (req, res) => {
     const { itemname, itemprice, itemdescription, itemcategory, itemquantity } = req.body;
     const item = itembeingedited;
     itembeingedited = undefined;
-    console.log(item);
     if (req.file !== undefined) {
       fs.unlink(item.imagepath, function (err) {
       });
@@ -484,9 +518,6 @@ app.post('/checkout', async (req, res) => {
       }
       await cartitems[i].save();
     }
-
-    console.log(totalprice);
-
     const newpayment = new Transaction({
       cost: totalprice,
       description: description,
@@ -496,7 +527,15 @@ app.post('/checkout', async (req, res) => {
     await Cart.deleteMany({ user: CurrentUser._id });
     res.redirect('/');
   } catch (err) {
-    console.log(err);
+    res.redirect('/');
+  }
+});
+app.post('/itempreview', async (req, res) => {
+  try {
+    const { itemid } = req.body;
+    const item = await Item.findById({ _id: itemid });
+    res.render('itempreview', { user: CurrentUser, item });
+  } catch (err) {
     res.redirect('/');
   }
 });
