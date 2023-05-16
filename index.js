@@ -4,9 +4,17 @@ const ejs = require('ejs');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const uri = "mongodb+srv://Ahmed200k:Aeuzilua7mDbKK2q@parallelanddistributed.ukthwyn.mongodb.net/Parallel_Project";
-const User = require('./User');
+const User = require('./database/User');
+const Product = require('./database/Product');
 const crypto = require('crypto');
 const salt = crypto.randomBytes(16).toString('hex');
+
+// This function is for testing purposes, it will be deleted later.
+run()
+async function run() {
+  const user = await User.find();
+  console.log(user)
+}
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 // Connect to MongoDB
@@ -180,4 +188,28 @@ app.post('/reset-password', (req, res) => {
     // Invalid token or email
     res.status(400).send('Invalid password reset token or email.');
   }
+});
+
+app.post('/delete-account', async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    // Check if the email already exists in the database
+    const existingUser = await User.findOne({ email });
+    if (!existingUser) {
+      return res.render('delete-account', { error: 'User not found' });
+    }
+    await existingUser.delete();
+  } catch (error) {
+    console.error('Error during deleting account:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+app.post('/update-email', async (req, res) => {
+
+});
+
+app.post('/update-password', async (req, res) => {
+
 });
