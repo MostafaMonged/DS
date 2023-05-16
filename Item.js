@@ -31,6 +31,14 @@ const itemSchema = new mongoose.Schema({
     sold: {
         type: Boolean,
         default: false
+    },
+    quantity: {
+        type: Number,
+        required: true
+    },
+    count: {
+        type: Number,
+        default: 0
     }
 });
 

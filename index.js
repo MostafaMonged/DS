@@ -7,6 +7,7 @@ const uri = "mongodb+srv://Ahmed200k:Aeuzilua7mDbKK2q@parallelanddistributed.ukt
 const User = require('./User');
 const crypto = require('crypto');
 const multer = require('multer');
+const fs = require('fs');
 const Item = require('./Item');
 const Cart = require('./Cart');
 const salt = crypto.randomBytes(16).toString('hex');
@@ -50,6 +51,7 @@ app.use(express.static(__dirname + "/public"));
 
 var CurrentUser;
 var userresetpassword;
+var itembeingedited;
 
 app.get("/", async (req, res) => {
   res.render("home", { user: CurrentUser });
@@ -151,6 +153,12 @@ app.get('/editprofile', (req, res) => {
   }
   else res.render('editprofile', { user: CurrentUser });
 });
+app.get('/edititem', (req, res) => {
+  if (CurrentUser === undefined) {
+    res.redirect('/login');
+  }
+  else res.render('edititem', { user: CurrentUser });
+});
 
 app.get('/signout', (req, res) => {
   CurrentUser = undefined;
@@ -161,6 +169,14 @@ app.get("/forgotpassword", (req, res) => {
   if (CurrentUser != undefined) {
     res.redirect('/');
   } else res.render("forgotpassword", { pageTitle: "Forgotpassword" });
+});
+app.get("/myitems", async (req, res) => {
+  if (CurrentUser === undefined) {
+    res.redirect('/');
+  } else {
+    const items = await Item.find({ seller: CurrentUser._id });
+    res.render("myitems", { user: CurrentUser, items: items })
+  }
 });
 
 app.get("/adminlogin", (req, res) => {
@@ -235,7 +251,7 @@ app.post("/login", async (req, res) => {
     res.redirect("/");
   } catch (error) {
     console.error("Error during login:", error);
-    res.redirect('/');;
+    res.redirect('/');
   }
 });
 
@@ -272,7 +288,7 @@ app.post("/adminlogin", async (req, res) => {
     res.redirect('/login')
   } catch (error) {
     console.error("Error during login:", error);
-    res.redirect('/');;
+    res.redirect('/');
   }
 });
 
@@ -299,27 +315,27 @@ app.post("/newpassword", async (req, res) => {
     .digest("hex");
   user.password = hash;
   await user.save();
-
-  // Provide feedback to the user that their password has been reset
   res.redirect('/');
 });
+
 app.post("/additem", upload.single('itemimage'), async (req, res) => {
   try {
     const imagePath = 'uploads/' + req.file.filename;
-    const { itemname, itemprice, itemdescription, itemcategory } = req.body;
+    const { itemname, itemprice, itemdescription, itemcategory, itemquantity } = req.body;
     const newitem = new Item({
       name: itemname,
       price: itemprice,
       description: itemdescription,
       category: itemcategory,
       imagepath: imagePath,
+      quantity: itemquantity,
       seller: CurrentUser
     });
     await newitem.save();
     res.redirect('/');
   } catch (error) {
     console.error("Error during Loading:", error);
-    res.redirect('/');;
+    res.redirect('/');
   }
 });
 app.post("/shop", async (req, res) => {
@@ -335,7 +351,7 @@ app.post("/shop", async (req, res) => {
     res.redirect(req.headers.referer);
   } catch (error) {
     console.error("Error during loading:", error);
-    res.redirect('/');;
+    res.redirect('/');
   }
 });
 app.post("/shoprm", async (req, res) => {
@@ -347,7 +363,55 @@ app.post("/shoprm", async (req, res) => {
     res.redirect(req.headers.referer);
   } catch (error) {
     console.error("Error during loading:", error);
-    res.redirect('/');;
+    res.redirect('/');
+  }
+});
+app.post("/edititem", async (req, res) => {
+  try {
+    const { userid, itemid } = req.body;
+    const user = await User.findOne({ _id: userid });
+    const item = await Item.findById({ _id: itemid });
+    itembeingedited = item;
+    res.render("edititem", { user: user, item: item });
+  } catch (error) {
+    console.error("Error during loading:", error);
+    res.redirect('/');
+  }
+});
+app.post("/deleteitem", async (req, res) => {
+  try {
+    const { itemid } = req.body;
+    const item = await Item.findByIdAndDelete({ _id: itemid });
+    res.redirect('/myitems');
+  } catch (error) {
+    res.redirect('/');
+  }
+});
+app.post("/edittheitem", upload.single('itemimage'), async (req, res) => {
+  try {
+    if (itembeingedited === undefined) {
+      return res.redirect('/edititem');
+    }
+    const { itemname, itemprice, itemdescription, itemcategory, itemquantity } = req.body;
+    const item = itembeingedited;
+    itembeingedited = undefined;
+    console.log(item);
+    if (req.file !== undefined) {
+      fs.unlink(item.imagepath, function (err) {
+      });
+      const imagePath = 'uploads/' + req.file.filename;
+      item.imagepath = imagePath;
+    }
+    item.name = itemname;
+    item.price = itemprice;
+    item.description = itemdescription;
+    item.category = itemcategory;
+    item.quantity = itemquantity;
+    await item.save();
+    res.redirect('/myitems');
+  } catch (error) {
+    console.error("Error during Loading:", error);
+    res.redirect('/');
   }
 });
 app.post("/editprofile", async (req, res) => {
@@ -377,7 +441,6 @@ app.post("/editprofile", async (req, res) => {
     CurrentUser.last_name = last_name;
     CurrentUser.phone = phone;
     CurrentUser.type = type;
-    console.log(CurrentUser);
     await CurrentUser.save();
     res.redirect('/');
   } catch (error) {
