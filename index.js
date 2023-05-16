@@ -81,12 +81,8 @@ app.get('/clothing', async (req, res) => {
   }
 });
 app.get('/shop', async (req, res) => {
-  if (CurrentUser == undefined) {
-    res.redirect('/login');
-  } else {
-    const items = await Item.find({});
-    res.render('shop', { user: CurrentUser, items: items });
-  }
+  const items = await Item.find({});
+  res.render('shop', { user: CurrentUser, items: items });
 });
 app.get('/home', async (req, res) => {
   if (CurrentUser == undefined) {
