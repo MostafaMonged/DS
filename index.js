@@ -518,13 +518,17 @@ app.post('/checkout', async (req, res) => {
       }
       await cartitems[i].save();
     }
+    if (description === "") {
+      await Cart.deleteMany({ user: CurrentUser._id });
+      return res.redirect('/');
+    }
+    await Cart.deleteMany({ user: CurrentUser._id });
     const newpayment = new Transaction({
       cost: totalprice,
       description: description,
       user: CurrentUser,
     });
     newpayment.save();
-    await Cart.deleteMany({ user: CurrentUser._id });
     res.redirect('/');
   } catch (err) {
     res.redirect('/');
