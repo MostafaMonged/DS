@@ -394,6 +394,7 @@ app.post("/shopsearch", async (req, res) => {
     if (category) {
       query.category = category;
     }
+    const items = await Item.find(query);
     res.render('shop', { user: CurrentUser, items: items });
   } catch (error) {
     console.error("Error during loading:", error);
