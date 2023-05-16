@@ -66,27 +66,27 @@ app.get('/login', (req, res) => {
   res.render('login', { user: CurrentUser });
 });
 app.get('/electronic', async (req, res) => {
-  if (CurrentUser !== undefined && user.type === 'Seller') res.redirect('/');
+  if (CurrentUser !== undefined && CurrentUser.type === 'Seller') res.redirect('/');
   const items = await Item.find({ category: 'electronics' });
   res.render('shop', { user: CurrentUser, items: items });
 });
 app.get('/clothing', async (req, res) => {
-  if (CurrentUser !== undefined && user.type === 'Seller') res.redirect('/');
+  if (CurrentUser !== undefined && CurrentUser.type === 'Seller') res.redirect('/');
   const items = await Item.find({ category: 'clothing' });
   res.render('shop', { user: CurrentUser, items: items });
 });
 app.get('/shop', async (req, res) => {
-  if (CurrentUser !== undefined && user.type === 'Seller') res.redirect('/');
+  if (CurrentUser !== undefined && CurrentUser.type === 'Seller') res.redirect('/');
   const items = await Item.find({});
   res.render('shop', { user: CurrentUser, items: items });
 });
 app.get('/home', async (req, res) => {
-  if (CurrentUser !== undefined && user.type === 'Seller') res.redirect('/');
+  if (CurrentUser !== undefined && CurrentUser.type === 'Seller') res.redirect('/');
   const items = await Item.find({ category: 'home' });
   res.render('shop', { user: CurrentUser, items: items });
 });
 app.get('/book', async (req, res) => {
-  if (CurrentUser !== undefined && user.type === 'Seller') res.redirect('/');
+  if (CurrentUser !== undefined && CurrentUser.type === 'Seller') res.redirect('/');
   const items = await Item.find({ category: 'books' });
   res.render('shop', { user: CurrentUser, items: items });
 });
