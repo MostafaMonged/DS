@@ -46,10 +46,14 @@
           <div class="product-quantity">
             <input type="number" value="1" min="1" />
           </div>
-          <div class="product-removal">
-            <button class="remove-product">Remove</button>
-          </div>
-          <div class="product-line-price">25.98</div>
+          <form action="/shoprm" method="post" class="product-removal" style="display:inline-block;">
+            <div style="display: none;">
+              <input type="text" name="userid" value="<%- user._id %>">
+              <input type="text" name="itemid" value="<%- items[i]._id %>">
+            </div>
+            <button type="submit" class="btn btn-danger">Remove</button>
+          </form>
+          <div class="product-line-price"><%- items[i].price %></div>
         </div>
         <% } %>
 

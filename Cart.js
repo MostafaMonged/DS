@@ -9,7 +9,7 @@ const cartSchema = new mongoose.Schema({
     item: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Item'
-    }
+    },
 });
 
 const Cart = mongoose.model('Cart', cartSchema);

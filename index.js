@@ -108,14 +108,12 @@ app.get('/cart', async (req, res) => {
   } else {
     const cartitems = [];
     const cart = await Cart.find({ user: CurrentUser._id });
-    console.log(cart);
     await Promise.all(cart.map(async (cartItem) => {
       const item = await Item.findById(cartItem.item);
       if (item) {
         cartitems.push(item);
       }
     }));
-    console.log(cartitems);
     res.render('cart', { user: CurrentUser, items: cartitems });
   }
 });
@@ -330,6 +328,18 @@ app.post("/shop", async (req, res) => {
       item: item
     });
     await newcart.save();
+    res.redirect(req.headers.referer);
+  } catch (error) {
+    console.error("Error during loading:", error);
+    res.redirect('/');;
+  }
+});
+app.post("/shoprm", async (req, res) => {
+  try {
+    const { userid, itemid } = req.body;
+    const user = await User.findOne({ _id: userid });
+    const item = await Item.findOne({ _id: itemid });
+    const cart = await Cart.findOneAndRemove({ user: CurrentUser._id, item: itemid });
     res.redirect(req.headers.referer);
   } catch (error) {
     console.error("Error during loading:", error);
