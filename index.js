@@ -128,22 +128,28 @@ app.get('/profile', (req, res) => {
   } else res.render('profile', { user: CurrentUser });
 });
 app.get('/itempreview', (req, res) => {
-  if (CurrentUser == undefined) {
+  if (CurrentUser === undefined) {
     res.redirect('/');
   } else res.render('itempreview', { user: CurrentUser });
 });
 
 app.get('/admin', (req, res) => {
-  if (CurrentUser == undefined || CurrentUser.type !== 'Admin') {
+  if (CurrentUser === undefined || CurrentUser.type !== 'Admin') {
     res.redirect('/login');
   } else res.render('admin', { user: CurrentUser });
 });
 
 app.get('/seller', (req, res) => {
-  if (CurrentUser == undefined || CurrentUser.type === 'Customer') {
+  if (CurrentUser === undefined || CurrentUser.type === 'Customer') {
     res.redirect('/login');
   }
   else res.render('seller', { user: CurrentUser });
+});
+app.get('/editprofile', (req, res) => {
+  if (CurrentUser === undefined) {
+    res.redirect('/login');
+  }
+  else res.render('editprofile', { user: CurrentUser });
 });
 
 app.get('/signout', (req, res) => {
@@ -219,8 +225,6 @@ app.post("/login", async (req, res) => {
       .createHash("sha256")
       .update(password + user.salt)
       .digest("hex");
-    console.log(hash);
-    console.log(user.password);
     if (hash !== user.password) {
       return res.render("login", {
         error: "Wrong Password",
@@ -344,5 +348,40 @@ app.post("/shoprm", async (req, res) => {
   } catch (error) {
     console.error("Error during loading:", error);
     res.redirect('/');;
+  }
+});
+app.post("/editprofile", async (req, res) => {
+  const { first_name, last_name, email, password, phone, type } = req.body;
+
+  try {
+    const existingUser = await User.findOne({ email });
+    if (existingUser && CurrentUser.email != email) {
+      return res.render("editprofile", {
+        error: "Email already exists",
+        user: CurrentUser,
+      });
+    }
+    const hash = crypto
+      .createHash("sha256")
+      .update(password + CurrentUser.salt)
+      .digest("hex");
+
+    if (hash !== CurrentUser.password) {
+      return res.render("editprofile", {
+        error: "Wrong Password",
+        user: CurrentUser,
+      });
+    }
+    CurrentUser.email = email;
+    CurrentUser.first_name = first_name;
+    CurrentUser.last_name = last_name;
+    CurrentUser.phone = phone;
+    CurrentUser.type = type;
+    console.log(CurrentUser);
+    await CurrentUser.save();
+    res.redirect('/');
+  } catch (error) {
+    console.error("Error during signup:", error);
+    res.redirect('/');
   }
 });
