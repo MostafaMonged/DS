@@ -44,7 +44,7 @@
           </div>
           <div class="product-price"><%- items[i].price %></div>
           <div class="product-quantity">
-            <input type="number" value="1" min="1" />
+            <input type="number" name="noofitems" value="<%- noofitems[i] %>" min="1" disabled />
           </div>
           <form action="/shoprm" method="post" class="product-removal" style="display:inline-block;">
             <div style="display: none;">
@@ -53,7 +53,7 @@
             </div>
             <button type="submit" class="btn btn-danger">Remove</button>
           </form>
-          <div class="product-line-price"><%- items[i].price %></div>
+          <div class="product-line-price"><%- items[i].price * noofitems[i] %></div>
         </div>
         <% } %>
 

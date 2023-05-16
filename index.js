@@ -10,6 +10,7 @@ const multer = require('multer');
 const fs = require('fs');
 const Item = require('./Item');
 const Cart = require('./Cart');
+const Transaction = require("./Transaction");
 const salt = crypto.randomBytes(16).toString('hex');
 
 
@@ -105,14 +106,16 @@ app.get('/cart', async (req, res) => {
     res.redirect('/');
   } else {
     const cartitems = [];
+    const noofitems = [];
     const cart = await Cart.find({ user: CurrentUser._id });
     await Promise.all(cart.map(async (cartItem) => {
       const item = await Item.findById(cartItem.item);
       if (item) {
         cartitems.push(item);
+        noofitems.push(cartItem.count);
       }
     }));
-    res.render('cart', { user: CurrentUser, items: cartitems });
+    res.render('cart', { user: CurrentUser, items: cartitems, noofitems: noofitems });
   }
 });
 app.get('/checkout', (req, res) => {
@@ -131,10 +134,14 @@ app.get('/itempreview', (req, res) => {
   } else res.render('itempreview', { user: CurrentUser });
 });
 
-app.get('/admin', (req, res) => {
+app.get('/admin', async (req, res) => {
   if (CurrentUser === undefined || CurrentUser.type !== 'Admin') {
     res.redirect('/login');
-  } else res.render('admin', { user: CurrentUser });
+
+  } else {
+    const items = await Item.find({});
+    res.render('admin', { user: CurrentUser, items: items });
+  }
 });
 
 app.get('/seller', (req, res) => {
@@ -339,11 +346,20 @@ app.post("/shop", async (req, res) => {
     const { userid, itemid } = req.body;
     const user = await User.findOne({ _id: userid });
     const item = await Item.findOne({ _id: itemid });
-    const newcart = new Cart({
-      user: user,
-      item: item
-    });
-    await newcart.save();
+    const cart = await Cart.findOne({ user: user._id, item: item._id })
+    console.log(cart);
+    if (cart !== null) {
+      if (cart.item.equals(item._id)) {
+        cart.count += 1;
+        await cart.save();
+      }
+    } else {
+      const newcart = new Cart({
+        user: user,
+        item: item
+      });
+      await newcart.save();
+    }
     res.redirect(req.headers.referer);
   } catch (error) {
     console.error("Error during loading:", error);
@@ -441,6 +457,46 @@ app.post("/editprofile", async (req, res) => {
     res.redirect('/');
   } catch (error) {
     console.error("Error during signup:", error);
+    res.redirect('/');
+  }
+});
+app.post('/checkout', async (req, res) => {
+  try {
+    var totalprice = 0;
+    var description = "";
+    const cartitems = [];
+    const noofitems = [];
+    const cart = await Cart.find({ user: CurrentUser._id });
+    await Promise.all(cart.map(async (cartItem) => {
+      const item = await Item.findById(cartItem.item);
+      if (item) {
+        cartitems.push(item);
+        noofitems.push(cartItem.count);
+      }
+    }));
+    for (let i = 0; i < cartitems.length; i++) {
+      totalprice += cartitems[i].price * noofitems[i];
+      description += "Item: " + cartitems[i].name + " Price: " + cartitems[i].price + "Quantity" + noofitems[i] + " ";
+      cartitems[i].count += noofitems[i];
+      cartitems[i].quantity -= noofitems[i];
+      if (noofitems[i].quantity === 0) {
+        noofitems[i].sold = true;
+      }
+      await cartitems[i].save();
+    }
+
+    console.log(totalprice);
+
+    const newpayment = new Transaction({
+      cost: totalprice,
+      description: description,
+      user: CurrentUser,
+    });
+    newpayment.save();
+    await Cart.deleteMany({ user: CurrentUser._id });
+    res.redirect('/');
+  } catch (err) {
+    console.log(err);
     res.redirect('/');
   }
 });
