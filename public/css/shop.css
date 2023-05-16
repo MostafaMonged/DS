@@ -3,7 +3,10 @@
   padding: 100px 0;
 }
 .card{
-  height: 500px;
+  height: 600px;
+}
+.card img{
+  height:200px;
 }
 .featured-products h2 {
   font-size: 36px;
@@ -37,6 +40,7 @@
   border-radius: 30px;
   background-color: #ff5722;
   border: none;
+  width: 200px;
 }
 
 .featured-products .btn-primary:hover {
@@ -47,10 +51,24 @@
   font-weight: 700;
   padding: 10px 20px;
   border-radius: 30px;
-
+  width:200px;
   border: none;
 }
 
-.btn-danger:hover {
-  background-color: #ff1100;
+.btn-info {
+  font-size: 18px;
+  font-weight: 700;
+  padding: 10px 20px;
+  border-radius: 30px;
+  width: 200px;
+
+  border: none;
+}
+.btn-success {
+  font-size: 18px;
+  font-weight: 700;
+  padding: 10px 20px;
+  border-radius: 30px;
+  width: 200px;
+  border: none;
 }

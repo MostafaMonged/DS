@@ -117,12 +117,6 @@ app.get('/profile', (req, res) => {
     res.redirect('/login');
   } else res.render('profile', { user: CurrentUser });
 });
-app.get('/itempreview', (req, res) => {
-  if (CurrentUser === undefined) {
-    res.redirect('/');
-  } else res.render('itempreview', { user: CurrentUser });
-});
-
 app.get('/admin', async (req, res) => {
   if (CurrentUser === undefined || CurrentUser.type !== 'Admin') {
     res.redirect('/login');
@@ -370,7 +364,7 @@ app.post("/shop", async (req, res) => {
       });
       await newcart.save();
     }
-    res.redirect(req.headers.referer);
+    res.redirect("/shop");
   } catch (error) {
     console.error("Error during loading:", error);
     res.redirect('/');
@@ -434,7 +428,7 @@ app.post("/deleteitem", async (req, res) => {
   try {
     const { itemid } = req.body;
     const item = await Item.findByIdAndDelete({ _id: itemid });
-    res.redirect(req.headers.referer);
+    res.redirect('/shop');
   } catch (error) {
     res.redirect('/');
   }

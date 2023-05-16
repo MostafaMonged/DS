@@ -31,43 +31,62 @@
           <label class="product-removal">Remove</label>
           <label class="product-line-price">Total</label>
         </div>
-        <% for (var i = 0; i < items.length; i++) { %>
+
+        <% var subtotal = 0; %> <% for (var i = 0; i < items.length; i++) {
+          var lineTotal = items[i].price * noofitems[i]; subtotal += lineTotal;
+          %>
         <div class="product">
           <div class="product-image">
             <img src="<%- items[i].imagepath %>" />
           </div>
           <div class="product-details">
             <div class="product-title"><%- items[i].name %></div>
-            <p class="product-description">
-              <%- items[i].description %>
-            </p>
+            <p class="product-description"><%- items[i].description %></p>
           </div>
           <div class="product-price"><%- items[i].price %></div>
           <div class="product-quantity">
             <input type="number" name="noofitems" value="<%- noofitems[i] %>" min="1" disabled />
           </div>
-          <form action="/shoprm" method="post" class="product-removal" style="display:inline-block;">
-            <div style="display: none;">
-              <input type="text" name="userid" value="<%- user._id %>">
-              <input type="text" name="itemid" value="<%- items[i]._id %>">
+          <form action="/shoprm" method="post" class="product-removal" style="display: inline-block">
+            <div style="display: none">
+              <input type="text" name="userid" value="<%- user._id %>" />
+              <input type="text" name="itemid" value="<%- items[i]._id %>" />
             </div>
             <button type="submit" class="btn btn-danger">Remove</button>
           </form>
-          <div class="product-line-price"><%- items[i].price * noofitems[i] %></div>
+          <div class="product-line-price"><%- lineTotal.toFixed(2) %></div>
         </div>
-        <% } %>
+        <% } %> <% var tax = subtotal * 0.05; %> <% var shipping = 15.00; %>
+        <% var grandTotal = subtotal + tax + shipping; %>
 
         <div class="totals">
           <div class="totals-item">
+            <label>Subtotal</label>
+            <div class="totals-value" id="cart-subtotal">
+              <%- subtotal.toFixed(2) %>
+            </div>
+          </div>
+          <div class="totals-item">
+            <label>Tax (5%)</label>
+            <div class="totals-value" id="cart-tax">
+              <%- tax.toFixed(2) %>
+            </div>
+          </div>
+          <div class="totals-item">
             <label>Shipping</label>
-            <div class="totals-value" id="cart-shipping"></div>
+            <div class="totals-value" id="cart-shipping"><%- shipping.toFixed(2) %></div>
           </div>
           <div class="totals-item totals-item-total">
             <label>Grand Total</label>
-            <div class="totals-value" id="cart-total"></div>
+            <div class="totals-value" id="cart-total">
+              <%- grandTotal.toFixed(2) %>
+            </div>
           </div>
         </div>
-        <a href="/checkout"><button class="checkout">Checkout</button></a>
+
+        <form action="/checkout" method="GET">
+          <button class="checkout" type="submit">Checkout</button>
+        </form>
       </div>
     </main>
   </div>
