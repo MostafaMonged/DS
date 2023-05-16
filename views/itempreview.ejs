@@ -33,7 +33,11 @@
               <input type="text" name="userid" value="<%- user._id %>">
               <input type="text" name="itemid" value="<%- item._id %>">
             </div>
+            <% if(item.sold === false){ %>
             <button type="submit" class="btn btn-primary">Add to Cart</button>
+            <% } else {%>
+            <h4 class="card-text" style="color: red;"> SOLD OUT</h4>
+            <% } %>
           </form>
 
           <% if (user.type === 'Admin') { %>

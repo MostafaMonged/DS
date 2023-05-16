@@ -30,13 +30,18 @@
                 <div class="card-body">
                   <h5 class="card-title">Item:<%- items[i].name %></h5>
                   <p class="card-text"> $<%- items[i].price %> </p>
+                  <p class="card-text"> <%- items[i].quantity %> </p>
                   <% if (typeof user !== 'undefined') { %>
                   <form action="/shop" method="post" class="form_class">
                     <div style="display: none;">
                       <input type="text" name="userid" value="<%- user._id %>">
                       <input type="text" name="itemid" value="<%- items[i]._id %>">
                     </div>
+                    <% if(items[i].sold === false){ %>
                     <button type="submit" class="btn btn-primary">Add to Cart</button>
+                    <% } else {%>
+                    <h4 class="card-text" style="color: red;"> SOLD OUT</h4>
+                    <% } %>
                   </form>
                   <form action="/itempreview" method="post">
                     <div style="display: none;">

@@ -351,6 +351,9 @@ app.post("/shop", async (req, res) => {
     const { userid, itemid } = req.body;
     const user = await User.findOne({ _id: userid });
     const item = await Item.findOne({ _id: itemid });
+    if (item.sold == 'true') {
+      return res.redirect('/');
+    }
     const cart = await Cart.findOne({ user: user._id, item: item._id })
     if (cart !== null) {
       if (cart.item.equals(item._id)) {
@@ -511,10 +514,16 @@ app.post('/checkout', async (req, res) => {
     for (let i = 0; i < cartitems.length; i++) {
       totalprice += cartitems[i].price * noofitems[i];
       description += "Item: " + cartitems[i].name + " Price: " + cartitems[i].price + "Quantity" + noofitems[i] + " ";
-      cartitems[i].count += noofitems[i];
-      cartitems[i].quantity -= noofitems[i];
-      if (noofitems[i].quantity === 0) {
-        noofitems[i].sold = true;
+      if (cartitems[i].quantity < noofitems[i]) {
+        cartitems[i].quantity -= cartitems[i].quantity;
+        cartitems[i].count += cartitems[i].quantity;
+      }
+      else {
+        cartitems[i].quantity -= noofitems[i];
+        cartitems[i].count += noofitems[i];
+      }
+      if (cartitems[i].quantity == 0) {
+        cartitems[i].sold = true;
       }
       await cartitems[i].save();
     }
