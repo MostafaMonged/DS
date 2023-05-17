@@ -40,6 +40,9 @@
             <input type="phone" class="form-control" name="phone" placeholder="Phone Number" required="required" value="<%- user.phone %>" />
           </div>
           <div class="form-group">
+            <input type="text" class="form-control" name="address" placeholder="Address" value="<%- user.address %>" required="required" />
+          </div>
+          <div class="form-group">
             <select class="form-select" required name="type">
               <option value="" disabled>Type</option>
               <option value="Customer" <% if(user.type==='Customer' ) {%> selected <% } %>>Customer</option>

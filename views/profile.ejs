@@ -25,9 +25,10 @@
         </div>
         <% if (typeof user !=='undefined' ) { %>
         <div class="profile-info">
-          <h2>Name: <%- user.first_name %></h2>
+          <h2>Name: <%- user.first_name %> <%- user.last_name %> </h2>
           <p>Email: <%- user.email %></p>
           <p>Phone: <%- user.phone %></p>
+          <p>Address: <%- user.address %></p>
           <a href="/editprofile"><button>Edit Profile</button></a>
         </div>
         <% } %>

@@ -101,7 +101,11 @@ app.get('/cart', async (req, res) => {
       const item = await Item.findById(cartItem.item);
       if (item) {
         cartitems.push(item);
-        noofitems.push(cartItem.count);
+        if (item.quantity < cartItem.count) {
+          noofitems.push(item.quantity);
+        } else {
+          noofitems.push(cartItem.count);
+        }
       }
     }));
     res.render('cart', { user: CurrentUser, items: cartitems, noofitems: noofitems });
@@ -464,7 +468,7 @@ app.post("/edittheitem", upload.single('itemimage'), async (req, res) => {
   }
 });
 app.post("/editprofile", async (req, res) => {
-  const { first_name, last_name, email, password, phone, type } = req.body;
+  const { first_name, last_name, email, password, phone, type, address } = req.body;
 
   try {
     const existingUser = await User.findOne({ email });
@@ -490,6 +494,7 @@ app.post("/editprofile", async (req, res) => {
     CurrentUser.last_name = last_name;
     CurrentUser.phone = phone;
     CurrentUser.type = type;
+    CurrentUser.address = address;
     await CurrentUser.save();
     res.redirect('/');
   } catch (error) {

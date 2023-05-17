@@ -30,6 +30,7 @@
                 <div class="card-body">
                   <h5 class="card-title">Item:<%- items[i].name %></h5>
                   <p class="card-text"> $<%- items[i].price %> </p>
+                  <p class="card-text"> <%- items[i].quantity %> </p>
                   <form action="/edititem" method="post" class="form_class">
                     <div style="display: none;">
                       <input type="text" name="userid" value="<%- user._id %>">
