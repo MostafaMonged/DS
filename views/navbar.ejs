@@ -1,15 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
     <a class="navbar-brand" href="/">Brand</a>
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarNav"
-      aria-controls="navbarNav"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
@@ -20,27 +12,59 @@
         <li class="nav-item">
           <a class="nav-link" href="/shop">Shop</a>
         </li>
+        <% if (typeof user !=='undefined' && (user.type === 'Customer' ||
+        user.type === 'Admin')) { %>
         <li class="nav-item">
           <a class="nav-link" href="/cart">Cart</a>
         </li>
+        <% } %> <% if (typeof user !=='undefined' && (user.type === 'Seller' ||
+        user.type === 'Admin')) { %>
         <li class="nav-item">
           <a class="nav-link" href="/seller">Sell</a>
         </li>
+        <% } %> <% if (typeof user !=='undefined' && (user.type === 'Seller' ||
+        user.type === 'Admin')) { %>
+        <li class="nav-item">
+          <a class="nav-link" href="/myitems">My Items</a>
+        </li>
+        <% } %>
       </ul>
-      <form class="d-flex">
-        <input
-          class="form-control me-2"
-          type="search"
-          placeholder="Search"
-          aria-label="Search"
-        />
+      <form class="d-flex" action="/shopsearch" method="post">
+        <input class="form-control me-2" type="search" name="search" placeholder="Search by name" aria-label="Search" />
+        <input class="form-control me-2" type="number" name="minPrice" placeholder="Min price" aria-label="Min price" />
+        <input class="form-control me-2" type="number" name="maxPrice" placeholder="Max price" aria-label="Max price" />
+        <select class="form-control me-2" name="category">
+          <option value="">All categories</option>
+          <option value="electronics">Electronics</option>
+          <option value="clothing">Clothing</option>
+          <option value="home">Home</option>
+          <option value="books">Books</option>
+        </select>
         <button class="btn btn-outline-light" type="submit">Search</button>
       </form>
-      <ul class="navbar-nav mb-2 mb-lg-0">
+
+      <% if (typeof user !== 'undefined') { %>
+      <ul class="navbar-nav ml-auto align-items-center">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" style="color: white" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <%= user.first_name %>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarScrollingDropdown">
+            <li><a class="dropdown-item" href="/profile">Profile</a></li>
+            <% if (user.type === 'Admin') { %>
+            <li><a class="dropdown-item" href="/admin">Admin Page</a></li>
+            <% } %>
+            <li><a class="dropdown-item" href="/signout">Sign Out</a></li>
+          </ul>
+        </li>
+      </ul>
+      <% } else { %>
+      <ul class="navbar-nav mb-2 mb-lg-0" id="login">
         <li class="nav-item">
           <a class="nav-link" href="/login">Login</a>
         </li>
       </ul>
+      <% } %>
     </div>
   </div>
 </nav>

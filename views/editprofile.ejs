@@ -20,66 +20,67 @@
     <%- include('navbar.ejs') %>
     <main class="vh-100 gradient-custom">
       <div class="signup-form">
-        <form action="/signup" method="POST" id="signupForm">
-          <h2>Register</h2>
-          <p class="hint-text">
-            Create your account. It's free and only takes a minute.
-          </p>
+        <% if (typeof user !=='undefined' ) { %>
+        <form action="/editprofile" method="POST" id="signupForm">
           <div class="form-group">
             <div class="row">
               <div class="col">
-                <input type="text" class="form-control" name="first_name" placeholder="First Name" required="required" />
+                <input type="text" class="form-control" name="first_name" placeholder="First Name" required="required" value="<%- user.first_name %>" />
               </div>
               <div class="col">
-                <input type="text" class="form-control" name="last_name" placeholder="Last Name" required="required" />
+                <input type="text" class="form-control" name="last_name" placeholder="Last Name" required="required" value="<%- user.last_name %> " />
               </div>
             </div>
           </div>
-          <div id="errorContainer" class="form-control" data-error-message="<%- typeof error !== 'undefined' ? error : '' %>" style="display: none; color: red;">
+          <div class="form-group">
+            <label id="errorContaineremail" class="form-label" for="typeEmailX" data-error-message="<%- typeof error !== 'undefined' ? error : '' %>" style="display: none; color: red;"></label>
+            <input type="email" class="form-control" name="email" placeholder="Email" required="required" value="<%= user.email %>" />
           </div>
           <div class="form-group">
-            <input type="email" class="form-control" name="email" placeholder="Email" required="required" />
+            <input type="phone" class="form-control" name="phone" placeholder="Phone Number" required="required" value="<%- user.phone %>" />
           </div>
           <div class="form-group">
-            <input type="phone" class="form-control" name="phone" placeholder="Phone Number" required="required" />
-          </div>
-          <div class="form-group">
-            <input type="text" class="form-control" name="address" placeholder="Address" required="required" />
-          </div>
-          <div class="form-group">
-            <input type="password" class="form-control" name="password" placeholder="Password" required="required" />
+            <input type="text" class="form-control" name="address" placeholder="Address" value="<%- user.address %>" required="required" />
           </div>
           <div class="form-group">
             <select class="form-select" required name="type">
-              <option value="" disabled selected>Type</option>
-              <option value="Customer">Customer</option>
-              <option value="Seller">Seller</option>
+              <option value="" disabled>Type</option>
+              <option value="Customer" <% if(user.type==='Customer' ) {%> selected <% } %>>Customer</option>
+              <option value="Seller" <% if(user.type==='Seller' ) {%> selected <% } %>>Seller</option>
+              <% if(user.type==='Admin' ) {%>
+              <option value="Admin" <% if(user.type==='Admin' ) {%> selected <% } %>>Admin</option>
+              <% } %>
             </select>
           </div>
           <div class="form-group">
+            <label id="errorContainerpass" class="form-label" for="password" data-error-message="<%- typeof error !== 'undefined' ? error : '' %>" style="display: none; color: red;"></label>
+            <input type="password" class="form-control" name="password" placeholder="Please Enter Your Password" required="required" />
+          </div>
+          <div class="form-group">
             <button type="submit" class="btn btn-success btn-lg btn-block">
-              Register Now
+              Save
             </button>
           </div>
         </form>
-        <div class="text-center">
-          Already have an account? <a href="/login">Sign in</a>
-        </div>
+        <% } %>
       </div>
     </main>
   </div>
   <script>
     const error = `<%- typeof error !== 'undefined' ? error : '' %>`;
-    const existingUser = `<%- typeof existingUser !== 'undefined' ? existingUser : '' %>`;
   </script>
 
   <!-- Your script tag -->
   <script>
     // Use the error variable here
-    const errorContainer = document.getElementById('errorContainer');
-    if (error) {
+    const errorContainer = document.getElementById('errorContaineremail');
+    const errorContainer2 = document.getElementById('errorContainerpass');
+    if (error === "Email already exists") {
       errorContainer.textContent = error;
       errorContainer.style.display = 'block';
+    } else if (error === "Wrong Password") {
+      errorContainer2.textContent = error;
+      errorContainer2.style.display = 'block';
     }
   </script>
 

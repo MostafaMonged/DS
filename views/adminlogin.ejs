@@ -11,7 +11,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
   <script src="https://kit.fontawesome.com/20655cedab.js" crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="css/login.css" />
+  <link rel="stylesheet" href="css/adminlogin.css" />
   <title>Port</title>
 </head>
 
@@ -27,25 +27,22 @@
                 <div class="card-body p-5 text-start">
                   <div class="mb-md-5 mt-md-4 pb-5">
                     <h2 class="fw-bold mb-2 text-uppercase text-center">
-                      Login
+                      Admin
                     </h2>
                     <p class="text-white-50 mb-5 text-center">
-                      Please enter your login and password!
+                      Please enter your admin token!
                     </p>
-                    <form action="/login" method="post">
+                    <form action="/adminlogin" method="post">
                       <div class="form-outline form-white mb-4">
-                        <label id="errorContaineremail" class="form-label" for="typeEmailx" data-error-message="<%- typeof error !== 'undefined' ? error : '' %>" style="display: none; color: red;"></label>
+                        <label id="errorContaineremail" class="form-label" for="typeEmailX" data-error-message="<%- typeof error !== 'undefined' ? error : '' %>" style="display: none; color: red;"></label>
                         <label class="form-label" for="typeEmailX">Email:</label>
                         <input type="email" id="typeEmailX" class="form-control form-control-lg" placeholder="Enter email" name="email" />
                       </div>
                       <div class="form-outline form-white mb-4">
                         <label id="errorContainerpass" class="form-label" for="password" data-error-message="<%- typeof error !== 'undefined' ? error : '' %>" style="display: none; color: red;"></label>
-                        <label class="form-label" for="typePasswordX">Password:</label>
-                        <input type="password" name="password" id="typePasswordX" class="form-control form-control-lg" placeholder="Enter password" />
+                        <label class="form-label" for="password">Token:</label>
+                        <input type="password" id="token" class="form-control form-control-lg" placeholder="Enter Token" name="token" />
                       </div>
-                      <p class="small mb-5 pb-lg-2">
-                        <a class="text-white-50" href="/forgotpassword">Forgot password?</a>
-                      </p>
                       <div class="text-center">
                         <button class="btn btn-outline-light btn-lg px-5" type="submit">
                           Login
@@ -53,39 +50,29 @@
                       </div>
                     </form>
                   </div>
-                  <div>
-                    <p class="mb-0">
-                      Don't have an account?
-                      <a href="/signup" class="text-white-50 fw-bold">Sign Up</a>
-                    </p>
-                    <p class="mb-0">
-                      Are you an admin?
-                      <a href="/adminlogin" class="text-white-50 fw-bold">Admin Login</a>
-                    </p>
-                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </section>
-      <script>
-        const error = `<%- typeof error !== 'undefined' ? error : '' %>`;
-      </script>
+        <script>
+          const error = `<%- typeof error !== 'undefined' ? error : '' %>`;
+        </script>
 
-      <!-- Your script tag -->
-      <script>
-        // Use the error variable here
-        const errorContainer = document.getElementById('errorContaineremail');
-        const errorContainer2 = document.getElementById('errorContainerpass');
-        if (error === "User doesn't Exist") {
-          errorContainer.textContent = error;
-          errorContainer.style.display = 'block';
-        } else if (error === "Wrong Password") {
-          errorContainer2.textContent = error;
-          errorContainer2.style.display = 'block';
-        }
-      </script>
+        <!-- Your script tag -->
+        <script>
+          // Use the error variable here
+          const errorContainer = document.getElementById('errorContaineremail');
+          const errorContainer2 = document.getElementById('errorContainerpass');
+          if (error === "Email doesn't exists") {
+            errorContainer.textContent = error;
+            errorContainer.style.display = 'block';
+          } else if (error === "Wrong Token") {
+            errorContainer2.textContent = error;
+            errorContainer2.style.display = 'block';
+          }
+        </script>
+      </section>
     </main>
   </div>
 </body>

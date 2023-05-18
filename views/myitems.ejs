@@ -21,7 +21,7 @@
     <main>
       <section class="featured-products">
         <div class="container">
-          <h2>Our Items</h2>
+          <h2>Your Items</h2>
           <div class="row">
             <% for (var i = 0; i < items.length; i++) { %>
             <div class="col-md-4 col-lg-3">
@@ -31,25 +31,13 @@
                   <h5 class="card-title">Item:<%- items[i].name %></h5>
                   <p class="card-text"> $<%- items[i].price %> </p>
                   <p class="card-text"> <%- items[i].quantity %> </p>
-                  <% if (typeof user !== 'undefined') { %>
-                  <form action="/shop" method="post" class="form_class">
+                  <form action="/edititem" method="post" class="form_class">
                     <div style="display: none;">
                       <input type="text" name="userid" value="<%- user._id %>">
                       <input type="text" name="itemid" value="<%- items[i]._id %>">
                     </div>
-                    <% if(items[i].sold === false){ %>
-                    <button type="submit" class="btn btn-primary">Add to Cart</button>
-                    <% } else {%>
-                    <h4 class="card-text" style="color: red;"> SOLD OUT</h4>
-                    <% } %>
+                    <button type="submit" class="btn btn-success">Edit Item</button>
                   </form>
-                  <form action="/itempreview" method="post">
-                    <div style="display: none;">
-                      <input type="text" name="itemid" value="<%- items[i]._id %>">
-                    </div>
-                    <button class="btn btn-info mt-4">Check Item</button>
-                  </form>
-                  <% if (user.type === 'Admin') { %>
                   <form action="/deleteitem" method="post">
                     <div style="display: none;">
                       <input type="text" name="userid" value="<%- user._id %>">
@@ -57,16 +45,6 @@
                     </div>
                     <button type="submit" class="btn btn-danger mt-4">Remove Item</button>
                   </form>
-                  <% } %>
-                  <% } else { %>
-                  <div><a href="/login"><button class="btn btn-success">Login to Buy</button></a></div>
-                  <form action="/itempreview" method="post">
-                    <div style="display: none;">
-                      <input type="text" name="itemid" value="<%- items[i]._id %>">
-                    </div>
-                    <button class="btn btn-info mt-4">Check Item</button>
-                  </form>
-                  <% } %>
                 </div>
               </div>
             </div>
