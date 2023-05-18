@@ -40,56 +40,58 @@
         <section class="featured-products">
           <div class="container">
             <h2>Featured Products</h2>
+            <% if (typeof itemWithHighestCounts !== undefined) { %>
             <div class="row">
+              <% for( let i = 0; i < 4; i++ ) { %>
               <div class="col-md-4 col-lg-3">
                 <div class="card">
-                  <img src="https://cdn.shopify.com/s/files/1/0561/8345/5901/products/hyperx_cloud_ii_red_2_main_mixer_900x.jpg?v=1680559410" alt="Product Image" class="card-img-top" />
+                  <img src="<%- itemWithHighestCounts[i].imagepath %>" alt="Category Image" class="card-img-top" style="height: 270px;" />
                   <div class="card-body">
-                    <div class="text">
-                      <h5 class="card-title">HyperX Cloud II - Gaming Headset</h5>
-                      <p class="card-text">$99.99</p>
-                    </div>
-                    <a href="#" class="btn btn-primary">Add to Cart</a>
+                    <h5 class="card-title">Item:<%- itemWithHighestCounts[i].name %></h5>
+                    <p class="card-text"> $<%- itemWithHighestCounts[i].price %> </p>
+                    <p class="card-text"> <%- itemWithHighestCounts[i].quantity %> </p>
+                    <% if (typeof user !== 'undefined') { %>
+                    <form action="/shop" method="post" class="form_class">
+                      <div style="display: none;">
+                        <input type="text" name="userid" value="<%- user._id %>">
+                        <input type="text" name="itemid" value="<%- itemWithHighestCounts[i]._id %>">
+                      </div>
+                      <% if(itemWithHighestCounts[i].sold === false){ %>
+                      <button type="submit" class="btn btn-primary">Add to Cart</button>
+                      <% } else {%>
+                      <h4 class="card-text" style="color: red;"> SOLD OUT</h4>
+                      <% } %>
+                    </form>
+                    <form action="/itempreview" method="post">
+                      <div style="display: none;">
+                        <input type="text" name="itemid" value="<%- itemWithHighestCounts[i]._id %>">
+                      </div>
+                      <button class="btn btn-info mt-4">Check Item</button>
+                    </form>
+                    <% if (user.type === 'Admin') { %>
+                    <form action="/deleteitem" method="post">
+                      <div style="display: none;">
+                        <input type="text" name="userid" value="<%- user._id %>">
+                        <input type="text" name="itemid" value="<%- itemWithHighestCounts[i]._id %>">
+                      </div>
+                      <button type="submit" class="btn btn-danger mt-4">Remove Item</button>
+                    </form>
+                    <% } %>
+                    <% } else { %>
+                    <div><a href="/login"><button class="btn btn-success">Login to Buy</button></a></div>
+                    <form action="/itempreview" method="post">
+                      <div style="display: none;">
+                        <input type="text" name="itemid" value="<%- itemWithHighestCounts[i]._id %>">
+                      </div>
+                      <button class="btn btn-info mt-4">Check Item</button>
+                    </form>
+                    <% } %>
                   </div>
                 </div>
               </div>
-              <div class="col-md-4 col-lg-3">
-                <div class="card">
-                  <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.LAQdUJeZNakfd27ikMynogHaFP%26pid%3DApi&f=1&ipt=5e44b1dca1c47c1e0b56242b8247b2ab6c8959b9f4ccc45e2e3d26ca40ad9ef1&ipo=images" alt="Product Image" class="card-img-top" />
-                  <div class="card-body">
-                    <div class="text">
-                      <h5 class="card-title">Lyst - Adidas originals Aerobounce Running Shoes in Blue for Men</h5>
-                      <p class="card-text">$169.99</p>
-                    </div>
-                    <a href="#" class="btn btn-primary">Add to Cart</a>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-4 col-lg-3">
-                <div class="card">
-                  <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.OrUoJulyZWNNQB-dtNvloQHaHa%26pid%3DApi&f=1&ipt=337a87d35ec3079ac8d9d5217a6856abdea3d3e93b6a885364eb7f0da9a1b231&ipo=images" alt="Product Image" class="card-img-top" />
-                  <div class="card-body">
-                    <div class="text">
-                      <h5 class="card-title">12-Pc. Stainless Steel Cookware & Utensil Set</h5>
-                      <p class="card-text">$208.99</p>
-                    </div>
-                    <a href="#" class="btn btn-primary">Add to Cart</a>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-4 col-lg-3">
-                <div class="card">
-                  <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Ftabs.web.media%2Fc%2F2%2Fc2sk%2Fc2sk-square-orig.jpg&f=1&nofb=1&ipt=deee400374b40befaf83abb76a4950080c73fb25165a68ee9f98d7c5afd62db5&ipo=images" alt="Product Image" class="card-img-top" />
-                  <div class="card-body">
-                    <div class="text">
-                      <h5 class="card-title">The Subtle Art of Not Giving a F*ck</h5>
-                      <p class="card-text">$16.20</p>
-                    </div>
-                    <a href="#" class="btn btn-primary">Add to Cart</a>
-                  </div>
-                </div>
-              </div>
+              <% } %>
             </div>
+            <% } %>
           </div>
         </section>
         <section class="product-categories">

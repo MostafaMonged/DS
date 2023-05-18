@@ -55,7 +55,10 @@ var userresetpassword;
 var itembeingedited;
 
 app.get("/", async (req, res) => {
-  res.render("home", { user: CurrentUser });
+  const itemWithHighestCounts = await Item.find()
+    .sort({ count: -1 })  // Sort by count in descending order
+    .limit(4);  // Retrieve only one item with the highest count
+  res.render("home", { user: CurrentUser, itemWithHighestCounts });
 });
 app.get("/signup", (req, res) => {
   if (CurrentUser != undefined) {
@@ -371,7 +374,7 @@ app.post("/shop", async (req, res) => {
       });
       await newcart.save();
     }
-    res.redirect("/shop");
+    res.redirect("/cart");
   } catch (error) {
     console.error("Error during loading:", error);
     res.redirect('/');

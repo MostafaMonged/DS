@@ -9,7 +9,7 @@ body {
   height: 250px;
 }
 .card-body{
-  height: 250px;
+  height: fit-content;
 }
 .card .text {
   height: 150px;
@@ -89,6 +89,39 @@ body {
   background-color: #f44336;
 }
 
+.featured-products .btn-danger {
+  font-size: 18px;
+  font-weight: 700;
+  padding: 10px 20px;
+  border-radius: 30px;
+  border: none;
+}
+
+.featured-products .btn-danger:hover {
+  background-color: #f44336;
+}
+.featured-products .btn-info {
+  font-size: 18px;
+  font-weight: 700;
+  padding: 10px 20px;
+  border-radius: 30px;
+  border: none;
+}
+
+.featured-products .btn-info:hover {
+  background-color: #f44336;
+}
+.featured-products .btn-success {
+  font-size: 18px;
+  font-weight: 700;
+  padding: 10px 20px;
+  border-radius: 30px;
+  border: none;
+}
+
+.featured-products .btn-success:hover {
+  background-color: #f44336;
+}
 /* Product categories styles */
 .product-categories {
   background-color: #333;
