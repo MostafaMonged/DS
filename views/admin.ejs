@@ -23,17 +23,21 @@
         <div class="header">
           <h1 class="admin-name">Admin Dashboard</h1>
         </div>
+        <% if (mostsold) { %>
         <div class="revenue-analytics">
           <h2 class="revenue-title">Most Sold Item</h2>
           <div class="revenue-value">Item:<%- mostsold.name %></div>
           <div class="revenue-value">Pieces Sold: <%- mostsold.count %></div>
         </div>
+        <% } %>
+        <% if (highestcustomer && BestTransaction) { %>
         <div class="revenue-analytics">
           <h2 class="revenue-title">Highest Transaction</h2>
           <div class="revenue-value">Price: <%- BestTransaction.cost %></div>
           <div class="revenue-value">Customer: <%- highestcustomer.first_name %> <%- highestcustomer.last_name %></div>
         </div>
-        <% if (itemWithHighestCountelec) { %>
+        <% } %>
+        <% if (itemWithHighestCountelec ) { %>
         <div class="revenue-analytics">
           <h2 class="revenue-title">Most Sold Electronic Item</h2>
           <div class="revenue-value">Item:<%- itemWithHighestCountelec.name %></div>
