@@ -23,7 +23,7 @@ body {
 .item-preview img {
   width: 40%;
   height: 40%;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 4px;
   margin-bottom: 20px;
   float: left;
